@@ -1,4 +1,11 @@
 language: python
+cache:
+  - pip: true
+addons:
+  apt:
+    packages:
+      - libblas-dev
+      - liblapack-dev
 python:
   - "3.4"
   - "3.5"

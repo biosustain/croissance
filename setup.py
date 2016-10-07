@@ -39,7 +39,7 @@ setup(
     install_requires=[
         'numpy>=1.9.1',
         'pandas>=0.15.2',
-        'scipy>=0.15.1',
+        'scipy>=0.14.0',
         'matplotlib>=1.4.3',
     ],
     classifiers=[

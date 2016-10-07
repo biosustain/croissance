@@ -12,3 +12,13 @@ Description
 
 A tool for estimating growth rates in growth curves.
 
+Installation
+============
+
+...
+
+Usage
+=====
+
+...
+

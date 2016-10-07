@@ -1,14 +1,13 @@
 language: python
 cache:
   - pip: true
-addons:
-  apt:
-    packages:
-      - libblas-dev
-      - liblapack-dev
 python:
   - "3.4"
   - "3.5"
+before_install:
+  - | 
+    mkdir -p $HOME/.config/matplotlib && \
+    echo 'backend: agg' > $HOME/.config/matplotlib/matplotlibrc
 install:
   - "pip install ."
 script: python setup.py test

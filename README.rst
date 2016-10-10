@@ -17,7 +17,7 @@ Description
 
 A tool for estimating growth rates in growth curves. The tool fits λ ⋅ e :sup:`μ⋅x` + N :sub:`0` to any candidate growth phases of the growth curve that have increasing growth, i.e. where both the first and second derivative of the growth function are positive. To identify these phases reliably, the tool utilizes a custom smoothing function that addresses problems other smoothing methods have with growth curves that have regions with varying levels of noise (e.g. lots of noise in the beginning, then less noise after growth starts, then more noise in the stationary phase). 
 
-The parameter N :sub:`0` of the model can optionally be constrained. This is recommended if the value is known. Growth is only comparable between growth phases if their N :sub:`0` (initial population) parameter is at a similar stage of true growth.
+The parameter N :sub:`0` of the model can optionally be constrained. This is recommended if the value is known. The growth rate is only comparable between calculated growth phases if their N :sub:`0` (initial population) parameter points to a similar stage of actual growth.
 
 Installation
 ============

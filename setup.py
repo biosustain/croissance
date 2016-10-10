@@ -22,6 +22,7 @@ setup(
     name='croissance',
     version='1.0.0',
     packages=find_packages(exclude=['*tests*']),
+    url='https://github.com/biosustain/croissance',
     author='Lars Schöning',
     author_email='lays@biosustain.dtu.dk',
     description='A tool for estimating growth rates in growth curves.',

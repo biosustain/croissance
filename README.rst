@@ -46,7 +46,9 @@ To process this file, enter:
 
     croissance example.tsv 
     
-The output will be generated at ``example.output.tsv``. To also output a PDF files with figures (``example.output.pdf``), enter:
+The output will be generated at ``example.output.tsv``. The output is formatted with column headers: ``name`` (sample name), ``phase`` (nth growth phase), ``start`` (start time), ``end`` (end time),  ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`) and a few others. By default, each sample is represented by at least one row, containing phase "0". This is simply the highest ranking phase if one was found for this curve; otherwise the remaining fields are empty. 
+
+To also output a PDF files with figures (``example.output.pdf``), enter:
 
 ::
 
@@ -54,7 +56,7 @@ The output will be generated at ``example.output.tsv``. To also output a PDF fil
 
 To see all the command-line options available, enter ``croissance``.
 
-For use from Python, provide your growth curve as a ``pandas.Series`` object. The growth rates are estimated using ``croissance.process_curve(curve)``. The return value is a ``namedtuple`` object with attributes ``series``, ``outliers`` and ``growth_phases`` . Each growth phase has the attributes ``start``, ``end``, ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`), as well as other attributes such as ``SNR`` (signal-to-noise ratio of the fit) and ``rank``.
+For use from Python, provide your growth curve as a ``pandas.Series`` object. The growth rates are estimated using ``croissance.process_curve(curve)``. The return value is a ``namedtuple`` object with attributes ``series``, ``outliers`` and ``growth_phases`` . Each growth phase has the attributes ``start`` (start time), ``end`` (end time), ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`), as well as other attributes such as ``SNR`` (signal-to-noise ratio of the fit) and ``rank``.
 
 ::
 

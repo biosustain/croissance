@@ -6,7 +6,11 @@ Croissance
 .. image:: https://img.shields.io/travis/biosustain/croissance/master.svg?style=flat-square
     :target: https://travis-ci.org/biosustain/croissance
 
+.. image:: https://img.shields.io/pypi/v/croissance.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/croissance
 
+.. image:: https://img.shields.io/pypi/l/croissance.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/croissance
 
 Description
 ===========

@@ -28,7 +28,7 @@ To install ``croissance`` with Python 3.x use:
 Usage
 =====
 
-Croissance can be used from command-line or as a Python library. The input to the command-line tool is generally one or more *.tsv files with the following format:
+Croissance can be used from command-line or as a Python library. The input to the command-line tool is generally one or more `*.tsv` files with the following format:
 
 ===== ===== ===== =====
 time  A1    A2    ...

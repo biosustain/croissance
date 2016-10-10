@@ -43,7 +43,7 @@ setup(
         'matplotlib>=1.4.3',
     ],
     classifiers=[
-        'Development Status :: 5 Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Topic :: Utilities',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',

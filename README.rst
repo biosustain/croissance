@@ -54,7 +54,7 @@ The output will be generated at ``example.output.tsv``. To also output a PDF fil
 
 To see all the command-line options available, enter ``croissance``.
 
-For use from Python, provide your growth curve as a ``pandas.Series`` object. The output will be a namedtuple object with `series`, `outliers` and `growth_phases` attributes. Each growth phase has the attributes `start`, `end`, `slope` (μ), `intercept` (λ), `n0` (N :sub:`0`), as well as other attributes such as `SNR` (signal-to-noise ratio of the fit) and `rank`.
+For use from Python, provide your growth curve as a ``pandas.Series`` object. The return value is a ``namedtuple`` object with attributes ``series``, ``outliers`` and ``growth_phases`` . Each growth phase has the attributes ``start``, ``end``, ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`), as well as other attributes such as ``SNR`` (signal-to-noise ratio of the fit) and ``rank``.
 
 ::
 

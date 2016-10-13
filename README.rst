@@ -22,7 +22,7 @@ The parameter N :sub:`0` of the model can optionally be constrained. This is rec
 Installation
 ============
 
-To install ``croissance`` with Python 3.x use:
+To install ``croissance``, use Python 3.x `pip`:
 
 ::
 

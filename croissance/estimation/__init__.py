@@ -54,9 +54,11 @@ AnnotatedGrowthCurve = namedtuple('AnnotatedGrowthCurve', ('series', 'outliers',
 class Estimator(object):
     def __init__(self,
                  *,
+                 segment_log_n0: bool = False,
                  constrain_n0: bool = False,
                  n0: float = 0.0):
         self._logger = logging.getLogger(__name__)
+        self._segment_log_n0 = segment_log_n0
         self._constrain_n0 = constrain_n0
         self._n0 = n0
 
@@ -103,7 +105,11 @@ class Estimator(object):
         if len(series[series > 0]) < 3:
             return AnnotatedGrowthCurve(series, outliers, [])
 
-        smooth_series = segment_spline_smoothing(series)
+        if self._segment_log_n0:
+            series_log_n0 = numpy.log(series - self._n0).dropna()
+            smooth_series = segment_spline_smoothing(series, series_log_n0)
+        else:
+            smooth_series = segment_spline_smoothing(series, )
 
         phases = []
         raw_phases = self._find_growth_phases(smooth_series, window=n_hours)

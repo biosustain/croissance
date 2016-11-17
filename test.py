@@ -97,3 +97,14 @@ class CroissanceTestCase(TestCase):
                 self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
                 self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
                 self.assertTrue(result.growth_phases[0].SNR > 1000)
+
+    def test_process_curve_wrong_time_unit(self):
+        mu = .5
+        pph = 0.1
+        curve = pandas.Series(
+            data=[numpy.exp(mu * i / pph) for i in range(100)],
+            index=[i / pph for i in range(100)])
+
+        result = process_curve(curve, constrain_n0=False, n0=0.)
+        self.assertEqual(len(result.growth_phases), 0)
+        self.assertEqual(list(result.series), list(curve))

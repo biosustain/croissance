@@ -96,6 +96,9 @@ class Estimator(object):
 
         n_hours = int(numpy.round(points_per_hour(series) * CURVE_MINIMUM_DURATION_HOURS))
 
+        if n_hours == 0:
+            return AnnotatedGrowthCurve(series, [], [])
+
         if n_hours % 2 == 0:
             n_hours += 1
 

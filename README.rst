@@ -32,7 +32,7 @@ To install ``croissance``, use Python 3.x `pip`:
 Usage
 =====
 
-Croissance can be used from command-line or as a Python library. The input to the command-line tool is generally one or more `*.tsv` files with the following format:
+Croissance can be used from command-line or as a Python library. The input to the command-line tool is generally one or more `*.tsv` files (tab-separated values) with the following format:
 
 ===== ===== ===== =====
 time  A1    A2    ...

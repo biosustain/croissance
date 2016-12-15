@@ -19,6 +19,10 @@ A tool for estimating growth rates in growth curves. The tool fits λ ⋅ e :sup
 
 The parameter N :sub:`0` of the model can optionally be constrained. This is recommended if the value is known. The growth rate in calculated growth phases can only be properly compared if their N :sub:`0` (baseline OD; when the organism is at its initial population) points to a similar stage of actual growth.
 
+.. image:: https://cloud.githubusercontent.com/assets/74085/21225843/140a20b6-c2d3-11e6-97c4-8acb9a2cd327.png
+    :target: #
+    :align: center
+
 Installation
 ============
 

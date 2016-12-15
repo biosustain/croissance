@@ -61,7 +61,7 @@ To also output a PDF files with figures (``example.output.pdf``), enter:
     croissance --figures example.tsv 
 
 
-.. image:: https://cloud.githubusercontent.com/assets/74085/21225843/140a20b6-c2d3-11e6-97c4-8acb9a2cd327.png
+.. image:: https://cloud.githubusercontent.com/assets/74085/21225960/abfa9a4a-c2d3-11e6-85c6-88b1db24723c.png
     :target: #
     :align: center
     

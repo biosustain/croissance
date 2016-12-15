@@ -19,10 +19,6 @@ A tool for estimating growth rates in growth curves. The tool fits λ ⋅ e :sup
 
 The parameter N :sub:`0` of the model can optionally be constrained. This is recommended if the value is known. The growth rate in calculated growth phases can only be properly compared if their N :sub:`0` (baseline OD; when the organism is at its initial population) points to a similar stage of actual growth.
 
-.. image:: https://cloud.githubusercontent.com/assets/74085/21225843/140a20b6-c2d3-11e6-97c4-8acb9a2cd327.png
-    :target: #
-    :align: center
-
 Installation
 ============
 
@@ -56,13 +52,22 @@ To process this file, enter:
     
 The output will be generated at ``example.output.tsv``. The output is formatted with column headers: ``name`` (sample name), ``phase`` (nth growth phase), ``start`` (start time), ``end`` (end time),  ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`) and a few others. By default, each sample is represented by at least one row, containing phase "0". This is simply the highest ranking phase if one was found for this curve; otherwise the remaining columns are empty. 
 
+----
+
 To also output a PDF files with figures (``example.output.pdf``), enter:
 
 ::
 
     croissance --figures example.tsv 
 
-To see all the command-line options available, enter ``croissance``.
+
+.. image:: https://cloud.githubusercontent.com/assets/74085/21225843/140a20b6-c2d3-11e6-97c4-8acb9a2cd327.png
+    :target: #
+    :align: center
+    
+----
+
+To see a description of all the command-line options available, enter ``croissance --help``.
 
 For use from Python, provide your growth curve as a ``pandas.Series`` object. The growth rates are estimated using ``croissance.process_curve(curve)``. The return value is a ``namedtuple`` object with attributes ``series``, ``outliers`` and ``growth_phases`` . Each growth phase has the attributes ``start`` (start time), ``end`` (end time), ``slope`` (μ), ``intercept`` (λ), ``n0`` (N :sub:`0`), as well as other attributes such as ``SNR`` (signal-to-noise ratio of the fit) and ``rank``.
 

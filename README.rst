@@ -11,6 +11,9 @@ Croissance
 
 .. image:: https://img.shields.io/pypi/l/croissance.svg?style=flat-square
     :target: https://pypi.python.org/pypi/croissance
+    
+.. image:: https://zenodo.org/badge/70239371.svg
+   :target: https://zenodo.org/badge/latestdoi/70239371    
 
 Description
 ===========

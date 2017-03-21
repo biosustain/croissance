@@ -42,6 +42,7 @@ setup(
         'pandas>=0.15.2',
         'scipy>=0.14.0',
         'matplotlib>=1.4.3',
+        'tqdm>=4.11.2'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

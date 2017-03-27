@@ -16,9 +16,7 @@ def remove_outliers(series, window=30, std=2):
         return series, pandas.Series(data=[], index=[])
 
     values = with_overhangs(series.values, window)
-    outliers = abs(values - pandas.rolling_median(values, window=window, center=True)) < pandas.rolling_std(values,
-                                                                                                            window=window,
-                                                                                                            center=True) * std
+    outliers = abs(values - values.rolling(window=window, center=True).median()) < values.rolling(window=window, center=True).std() * std
     outlier_mask = outliers[window:-window]
 
     outliers = pandas.Series(data=series.values[~outlier_mask], index=series.index[~outlier_mask])

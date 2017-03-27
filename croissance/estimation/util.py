@@ -35,4 +35,4 @@ def savitzky_golay(series, *args, **kwargs):
 def with_overhangs(values, overhang_size):
     start_overhang = numpy.repeat([numpy.median(values[0:overhang_size // 2 + 1])], overhang_size)
     end_overhang = numpy.repeat([numpy.max(values[-1 - overhang_size // 2:-1])], overhang_size)
-    return numpy.concatenate([start_overhang, values, end_overhang])
+    return pandas.Series(numpy.concatenate([start_overhang, values, end_overhang]))

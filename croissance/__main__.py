@@ -6,6 +6,7 @@ import sys
 from tqdm import tqdm
 
 from croissance import Estimator
+from croissance.estimation.util import normalize_time_unit
 from croissance.figures import PDFWriter
 from croissance.formats.input import TSVReader
 from croissance.formats.output import TSVWriter
@@ -13,6 +14,10 @@ from croissance.formats.output import TSVWriter
 parser = argparse.ArgumentParser(description="Estimate growth rates in growth curves")
 parser.add_argument('infiles', type=argparse.FileType('r'), nargs='+')
 parser.add_argument('--input-format', type=str, default='tsv')
+parser.add_argument('--input-time-unit',
+                    choices=['hours', 'minutes'],
+                    default='hours',
+                    help="Time unit in time column")
 parser.add_argument('--N0',
                     type=float,
                     default=0.0,
@@ -61,7 +66,7 @@ def main():
             outwriter = TSVWriter(outfile, include_default_phase=not args.output_exclude_default_phase)
 
             for name, curve in tqdm(list(reader.read(infile)), unit='curve'):
-                annotated_curve = estimator.growth(curve)
+                annotated_curve = estimator.growth(normalize_time_unit(curve, args.input_time_unit))
 
                 outwriter.write(name, annotated_curve)
 

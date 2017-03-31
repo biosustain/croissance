@@ -5,6 +5,7 @@ import pandas
 
 from croissance import process_curve
 from croissance.estimation import fit_exponential
+from croissance.estimation.util import normalize_time_unit
 from croissance.figures import PDFWriter
 
 
@@ -108,3 +109,8 @@ class CroissanceTestCase(TestCase):
         result = process_curve(curve, constrain_n0=False, n0=0.)
         self.assertEqual(len(result.growth_phases), 0)
         self.assertEqual(list(result.series), list(curve))
+
+    def test_normalize_time_unit(self):
+        curve = pandas.Series(index=[0, 15, 30, 60], data=[1, 2, 3, 4])
+        self.assertTrue(pandas.Series(index=[0., 0.25, 0.5, 1.], data=[1, 2, 3, 4])
+                        .equals(normalize_time_unit(curve, 'minutes')))

@@ -36,3 +36,13 @@ def with_overhangs(values, overhang_size):
     start_overhang = numpy.repeat([numpy.median(values[0:overhang_size // 2 + 1])], overhang_size)
     end_overhang = numpy.repeat([numpy.max(values[-1 - overhang_size // 2:-1])], overhang_size)
     return pandas.Series(numpy.concatenate([start_overhang, values, end_overhang]))
+
+
+def normalize_time_unit(curve: pandas.Series, unit: str = 'hours'):
+    if unit == 'hours':
+        return curve
+    elif unit == 'minutes':
+        return pandas.Series(index=curve.index / 60., data=curve.values)
+    else:
+        raise NotImplementedError("Unsupported time unit: '{}'".format(unit))
+

@@ -16,7 +16,7 @@ def segment_by_std_dev(series, increment=2, maximum=20):
     :param maximum:
     :return:
     """
-    duration = int(series.index[-1])
+    duration = int(series.index[-2])
     windows = []
 
     for i in range(0, duration, increment):

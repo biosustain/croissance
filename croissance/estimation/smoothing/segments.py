@@ -48,7 +48,7 @@ def segment_by_std_dev(series, increment=2, maximum=20):
 def window_median(window, start, end):
     x = numpy.linspace(0, 1, num=len(window))
     A = numpy.vstack([x, numpy.ones(len(x))]).T
-    m, c = numpy.linalg.lstsq(A, window)[0]
+    m, c = numpy.linalg.lstsq(A, window, rcond=None)[0]
 
     return (start + end) / 2, m * 0.5 + numpy.median(window - m * x)
 

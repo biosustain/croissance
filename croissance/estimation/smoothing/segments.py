@@ -70,6 +70,9 @@ def segment_points(series, segments):
     for start, end in segments:
         window = series[start:end]
 
+        if window.empty:
+            continue
+
         if end - start > 5:
             out.append(window_median(series[start:start + 2], start, start + 2))
 

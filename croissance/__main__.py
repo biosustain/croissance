@@ -56,6 +56,7 @@ def main():
                           n0=args.N0)
 
     try:
+        empties = {}
         for infile in tqdm(args.infiles, unit='infile'):
             outfile = open('{}{}.tsv'.format(infile.name[:-4], args.output_suffix), 'w')
 
@@ -66,6 +67,12 @@ def main():
             outwriter = TSVWriter(outfile, include_default_phase=not args.output_exclude_default_phase)
 
             for name, curve in tqdm(list(reader.read(infile)), unit='curve'):
+                if curve.empty:
+                    try:
+                        empties[infile.name].append(name)
+                    except KeyError:
+                        empties[infile.name] = [name]
+                    continue
                 annotated_curve = estimator.growth(normalize_time_unit(curve, args.input_time_unit))
 
                 outwriter.write(name, annotated_curve)
@@ -80,7 +87,10 @@ def main():
     except KeyboardInterrupt:
         pass
 
-    print()
+    if empties != {}:
+        print('\nEmpty cells were found and discarded:\n', '\n'.join([(infile.name+'\t'+name) for key, names in empties.items() for name in names]))
+    else:
+        print()
 
 
 if __name__ == '__main__':

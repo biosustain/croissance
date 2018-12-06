@@ -24,13 +24,12 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = p0[:2]
 
     try:
-        popt, pcov = curve_fit(fit_fn, series.index, series.values, p0=p0, maxfev=10000)
-        # popt, pcov = curve_fit(fit_fn,
-        #                        series.index,
-        #                        series.values,
-        #                        p0=p0,
-        #                        maxfev=10000,
-        #                        bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
+        popt, pcov = curve_fit(fit_fn,
+                               series.index,
+                               series.values,
+                               p0=p0,
+                               maxfev=10000,
+                               bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
 
         if n0 is not None:
             popt = tuple(popt) + (n0,)
@@ -56,13 +55,12 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = (numpy.exp(c), slope)
 
     try:
-        popt, pcov = curve_fit(fit_fn, series.index, series.values, p0=p0, maxfev=10000)
-        # popt, pcov = curve_fit(fit_fn,
-        #                        series.index,
-        #                        series.values,
-        #                        p0=p0,
-        #                        maxfev=10000,
-        #                        bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
+        popt, pcov = curve_fit(fit_fn,
+                               series.index,
+                               series.values,
+                               p0=p0,
+                               maxfev=10000,
+                               bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
 
         if n0 is not None:
             popt = tuple(popt) + (n0,)

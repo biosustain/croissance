@@ -16,10 +16,11 @@ def segment_by_std_dev(series, increment=2, maximum=20):
     :param maximum:
     :return:
     """
+    start = int(series.index.min())
     duration = int(series.index[-2])
     windows = []
 
-    for i in range(0, duration, increment):
+    for i in range(start, duration, increment):
         for size in range(1, maximum + 1):
             window = detrend(series[i:i + size*increment])
             heappush(windows, (window.std() / (size*increment), i, i + size*increment))
@@ -48,7 +49,7 @@ def segment_by_std_dev(series, increment=2, maximum=20):
 def window_median(window, start, end):
     x = numpy.linspace(0, 1, num=len(window))
     A = numpy.vstack([x, numpy.ones(len(x))]).T
-    m, c = numpy.linalg.lstsq(A, window)[0]
+    m, c = numpy.linalg.lstsq(A, window, rcond=None)[0]
 
     return (start + end) / 2, m * 0.5 + numpy.median(window - m * x)
 
@@ -70,6 +71,9 @@ def segment_points(series, segments):
     for start, end in segments:
         window = series[start:end]
 
+        if window.empty:
+            continue
+
         if end - start > 5:
             out.append(window_median(series[start:start + 2], start, start + 2))
 
@@ -90,6 +94,6 @@ def segment_spline_smoothing(series, series_std_dev=None):
     if series_std_dev is None:
         series_std_dev = series
     segments = segment_by_std_dev(series_std_dev)
-    points = segment_points(series, segments)
+    points = segment_points(series, segments).sort_index()
     spline = InterpolatedUnivariateSpline(points.index, points.values, k=3)
     return pandas.Series(data=spline(series.index), index=series.index)

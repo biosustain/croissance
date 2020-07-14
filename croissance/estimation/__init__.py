@@ -115,6 +115,9 @@ class Estimator(object):
             smooth_series = segment_spline_smoothing(series, )
 
         phases = []
+        # give up if there isn't enough data
+        if len(smooth_series) < n_hours:
+            return AnnotatedGrowthCurve(series, [], [])
         raw_phases = self._find_growth_phases(smooth_series, window=n_hours)
 
         for phase in raw_phases:

@@ -20,9 +20,11 @@ Description
 
 A tool for estimating growth rates in growth curves. The tool fits λ ⋅ e :sup:`μ⋅x` + N :sub:`0` to any candidate growth phases of the growth curve that have increasing growth, i.e. where both the first and second derivative of the growth function are positive. To identify these phases reliably, the tool utilizes a custom smoothing function that addresses problems other smoothing methods have with growth curves that have regions with varying levels of noise (e.g. lots of noise in the beginning, then less noise after growth starts, then more noise in the stationary phase). 
 
-The parameter N :sub:`0` is - contrary to common nomenclature - represents the background/blank OD reading and can optionally be constrained. This is recommended if the value is known.
+The parameter N :sub:`0` represents the background/blank OD reading (not seeding OD) and can optionally be constrained. This is recommended if the value is known.
 
-The growth rate in calculated growth phases can only be properly compared if their λ (seeding OD; when the organism is at its initial population) points to a similar stage of actual growth. Currently λ reported by this package represents ??? and should not be used as a comparison measure.
+The growth rate in calculated growth phases can only be properly compared if their seeding OD (when the organism is at its initial population) points to a similar stage of actual growth.
+
+Intercept (λ) reported by this package can be used as indicator of lag if SNR is sufficiently high.
 
 Installation
 ============

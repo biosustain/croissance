@@ -4,9 +4,10 @@ cache:
 python:
   - "3.5"
 before_install:
-  - | 
+  - |
     mkdir -p $HOME/.config/matplotlib && \
     echo 'backend: agg' > $HOME/.config/matplotlib/matplotlibrc
 install:
-  - "pip install ."
-script: python setup.py test
+  - python setup.py install
+  - pip install pytest
+script: pytest

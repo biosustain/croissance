@@ -33,10 +33,6 @@ setup(
             "croissance = croissance.main:entry_point",
         ],
     },
-    test_suite="nose.collector",
-    tests_require=[
-        "nose>=1.1.2",
-    ],
     install_requires=[
         "coloredlogs>=14.0.0",
         "matplotlib>=1.4.3",

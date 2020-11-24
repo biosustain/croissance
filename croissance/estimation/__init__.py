@@ -123,7 +123,7 @@ class Estimator:
         phases = []
         if len(smooth_series) < n_hours:
             self._log.warning("Insufficient smoothed data for %s", name)
-            return AnnotatedGrowthCurve(series, [], [])
+            return AnnotatedGrowthCurve(series, outliers, [])
         raw_phases = self._find_growth_phases(smooth_series, window=n_hours)
 
         for phase in raw_phases:

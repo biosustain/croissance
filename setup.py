@@ -30,7 +30,7 @@ setup(
     license="Apache License Version 2.0",
     entry_points={
         "console_scripts": [
-            "croissance = croissance.__main__:main",
+            "croissance = croissance.main:entry_point",
         ],
     },
     test_suite="nose.collector",

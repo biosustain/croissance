@@ -63,7 +63,7 @@ class Estimator:
         constrain_n0: bool = False,
         n0: float = 0.0
     ):
-        self._logger = logging.getLogger(__name__)
+        self._log = logging.getLogger(__name__)
         self._segment_log_n0 = segment_log_n0
         self._constrain_n0 = constrain_n0
         self._n0 = n0
@@ -72,11 +72,8 @@ class Estimator:
         self, curve: "pandas.Series", window
     ) -> "typing.List[RawGrowthPhase]":
         """
-        Finds growth phases by locating regions in a series where both the first and second derivatives are positive.
-
-        :param curve:
-        :param window:
-        :return:
+        Finds growth phases by locating regions in a series where both the first and
+        second derivatives are positive.
         """
         first_derivative = savitzky_golay(curve, window, 3, deriv=1)
         second_derivative = savitzky_golay(curve, window, 3, deriv=2)
@@ -109,6 +106,7 @@ class Estimator:
         )
 
         if n_hours == 0:
+            self._log.warning("Less than 1 data-point/hour; cannot proceed")
             return AnnotatedGrowthCurve(series, [], [])
 
         if n_hours % 2 == 0:
@@ -118,6 +116,7 @@ class Estimator:
 
         # NOTE workaround for issue with negative curves
         if len(series[series > 0]) < 3:
+            self._log.warning("Less than 3 data-points post filtering; cannot proceeed")
             return AnnotatedGrowthCurve(series, outliers, [])
 
         if self._segment_log_n0:
@@ -129,8 +128,8 @@ class Estimator:
             )
 
         phases = []
-        # give up if there isn't enough data
         if len(smooth_series) < n_hours:
+            self._log.warning("Insufficient data, cannot determine growth")
             return AnnotatedGrowthCurve(series, [], [])
         raw_phases = self._find_growth_phases(smooth_series, window=n_hours)
 

@@ -38,11 +38,11 @@ setup(
         "nose>=1.1.2",
     ],
     install_requires=[
+        "coloredlogs>=14.0.0",
+        "matplotlib>=1.4.3",
         "numpy>=1.9.1",
         "pandas>=0.18.0",
         "scipy>=0.14.0",
-        "matplotlib>=1.4.3",
-        "tqdm>=4.11.2",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

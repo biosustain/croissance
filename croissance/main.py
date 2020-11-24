@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import argparse
-import collections
+import logging
 import sys
 
 from pathlib import Path
 
-from tqdm import tqdm
+import coloredlogs
 
 from croissance import Estimator
 from croissance.estimation.util import normalize_time_unit
@@ -59,28 +59,50 @@ def parse_args(argv):
         help="Renders a PDF file with figures for each curve",
     )
 
+    group = parser.add_argument_group("Logging")
+    group.add_argument(
+        "--log-level",
+        type=str.upper,
+        default="INFO",
+        choices=("DEBUG", "INFO", "WARNING", "ERROR"),
+        help="Set verbosity of log messages",
+    )
+
     return parser.parse_args(argv)
+
+
+def setup_logging(level):
+    coloredlogs.install(
+        fmt="%(asctime)s %(name)s %(levelname)s %(message)s",
+        level=level,
+    )
+
+    return logging.getLogger("croissance")
 
 
 def main(argv):
     args = parse_args(argv)
-    reader = TSVReader()
+    log = setup_logging(level=args.log_level)
 
+    reader = TSVReader()
     estimator = Estimator(
-        constrain_n0=args.constrain_N0, segment_log_n0=args.segment_log_N0, n0=args.N0
+        constrain_n0=args.constrain_N0,
+        segment_log_n0=args.segment_log_N0,
+        n0=args.N0,
     )
 
-    empty_cells = collections.defaultdict(list)
-    for filepath in tqdm(args.infiles, unit="infile"):
+    for filepath in args.infiles:
+        log.info("Reading curves from '%s", filepath)
         with filepath.open("rt") as infile:
             curves = list(reader.read(infile))
 
         annotated_curves = {}
-        for name, curve in tqdm(curves, unit="curve"):
+        for name, curve in curves:
             if curve.empty:
-                empty_cells[infile.name].append(name)
+                log.warning("Skipping empty curve %r", name)
                 continue
 
+            log.info("Estimating growth for curve %r", name)
             annotated_curves[name] = estimator.growth(
                 normalize_time_unit(curve, args.input_time_unit)
             )
@@ -101,13 +123,7 @@ def main(argv):
                     for name, annotated_curve in annotated_curves.items():
                         figwriter.write(name, annotated_curve)
 
-    print()
-    if empty_cells:
-        print("Empty cells were found and discarded:\n")
-
-        for key, names in empty_cells.items():
-            for name in names:
-                print(key + "\t" + name)
+    log.info("Done ..")
 
 
 def entry_point():

@@ -101,7 +101,11 @@ class Estimator:
         )
 
         if n_hours == 0:
-            self._log.warning("Fewer than one Data-points/hour for %s", name)
+            self._log.warning(
+                "Fewer than one data-point per hour for %s. Use the command-line"
+                "`--input-time-unit minutes` if times are represented in minutes.",
+                name,
+            )
             return AnnotatedGrowthCurve(series, [], [])
 
         if n_hours % 2 == 0:

@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy
 import pandas
 
-from croissance import process_curve
+from croissance import process_curve, AnnotatedGrowthCurve
 from croissance.estimation import fit_exponential
 from croissance.estimation.util import normalize_time_unit
 from croissance.figures import PDFWriter
@@ -25,6 +25,39 @@ class CroissanceTestCase(TestCase):
             self.assertAlmostEqual(intercept, 0, 2, msg='"intercept"=0')
             self.assertAlmostEqual(mu, slope, 6, msg="growth rate (mu)={}".format(mu))
             self.assertTrue(snr > 100000, "signal-noise ratio should be very good")
+
+    def test_process_curve_empty_series(self):
+        result = process_curve(pandas.Series([], dtype="float64"))
+
+        self.assertTrue(result.series.empty)
+        self.assertEqual(result.outliers, [])
+        self.assertEqual(result.growth_phases, [])
+
+    def test_process_curve_null_series(self):
+        curve = pandas.Series(index=[1, 2], data=[None, float("NaN")])
+        result = process_curve(curve)
+
+        self.assertIs(result.series, curve)
+        self.assertEqual(result.outliers, [])
+        self.assertEqual(result.growth_phases, [])
+
+    def test_process_curve_time_unit(self):
+        mu = 0.5
+        pph = 4.0
+        curve = pandas.Series(
+            data=[numpy.exp(mu * i / pph) for i in range(100)],
+            index=[i / pph for i in range(100)],
+        )
+
+        hours = process_curve(curve, unit="hours")
+        minutes = process_curve(
+            pandas.Series(index=curve.index * 60.0, data=curve.values),
+            unit="minutes",
+        )
+
+        self.assertTrue(hours.series.equals(minutes.series))
+        self.assertTrue(hours.outliers.equals(minutes.outliers))
+        self.assertEqual(hours.growth_phases, minutes.growth_phases)
 
     def test_process_curve_basic(self):
         with open("./test.basic.pdf", "wb") as f:

@@ -1,4 +1,5 @@
 import logging
+
 from collections import namedtuple
 from operator import attrgetter
 
@@ -24,7 +25,7 @@ class RawGrowthPhase(namedtuple("RawGrowthPhase", ("start", "end"))):
 
 class GrowthPhase(
     namedtuple(
-        "GrowthPhase", ("start", "end", "slope", "intercept", "n0", "attributes")
+        "GrowthPhase", ("start", "end", "slope", "intercept", "n0", "SNR", "rank")
     )
 ):
     __slots__ = ()
@@ -33,15 +34,13 @@ class GrowthPhase(
     def duration(self):
         return self.end - self.start
 
-    @classmethod
-    def pick_best(cls, growth_phases, metric="duration"):
-        try:
-            return sorted(growth_phases, key=attrgetter(metric), reverse=True)[0]
-        except IndexError:
-            return None
+    @staticmethod
+    def pick_best(growth_phases, metric="duration"):
+        growth_phases = sorted(growth_phases, key=attrgetter(metric))
+        if growth_phases:
+            return growth_phases[-1]
 
-    def __getattr__(self, item):
-        return self.attributes.get(item, None)
+        return None
 
 
 AnnotatedGrowthCurve = namedtuple(
@@ -161,7 +160,15 @@ class Estimator:
                 continue
 
             phases.append(
-                GrowthPhase(phase.start, phase.end, slope, intercept, n0, {"SNR": snr})
+                GrowthPhase(
+                    start=phase.start,
+                    end=phase.end,
+                    slope=slope,
+                    intercept=intercept,
+                    n0=n0,
+                    SNR=snr,
+                    rank=None,
+                )
             )
 
         ranked_phases = rank_phases(

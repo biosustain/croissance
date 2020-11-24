@@ -11,10 +11,13 @@ def rank_phases(phases, weights, thresholds):
         values[attribute] = [getattr(phase, attribute) for phase in phases]
         values[attribute].append(thresholds[attribute])
 
+    ranked_phases = []
     for phase in phases:
-        phase.attributes["rank"] = sum(
+        rank = sum(
             weight * score(values[attribute], getattr(phase, attribute))
             for attribute, weight in weights.items()
         ) / sum(weights.values())
 
-    return sorted(phases, key=attrgetter("rank"), reverse=True)
+        ranked_phases.append(phase._replace(rank=rank))
+
+    return sorted(ranked_phases, key=attrgetter("rank"), reverse=True)

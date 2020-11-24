@@ -19,7 +19,7 @@ class TSVWriter:
         if not self._exclude_default_phase:
             phase = GrowthPhase.pick_best(curve.growth_phases, "rank")
             if phase is None:
-                phase = GrowthPhase(None, None, None, None, None, {})
+                phase = GrowthPhase(None, None, None, None, None, None, None)
 
             self._write_phase(name, 0, phase)
 

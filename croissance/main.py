@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import argparse
 import logging
+import multiprocessing
+import signal
 import sys
 
 from pathlib import Path
@@ -12,6 +14,30 @@ from croissance.estimation.util import normalize_time_unit
 from croissance.figures.writer import PDFWriter
 from croissance.formats.input import TSVReader
 from croissance.formats.output import TSVWriter
+
+
+class EstimatorWrapper:
+    def __init__(self, args):
+        self.estimator = Estimator(
+            constrain_n0=args.constrain_N0,
+            segment_log_n0=args.segment_log_N0,
+            n0=args.N0,
+        )
+
+        self.input_time_unit = args.input_time_unit
+
+    def __call__(self, values):
+        filepath, idx, name, curve = values
+
+        normalized_curve = normalize_time_unit(curve, self.input_time_unit)
+        annotated_curve = self.estimator.growth(normalized_curve, name)
+
+        return (filepath, idx, name, annotated_curve)
+
+
+def init_worker():
+    # Ensure that KeyboardInterrupt exceptions only occur in the main thread
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 def parse_args(argv):
@@ -59,6 +85,13 @@ def parse_args(argv):
         help="Renders a PDF file with figures for each curve",
     )
 
+    parser.add_argument(
+        "--threads",
+        type=int,
+        default=1,
+        help="Max number of threads to use during growth estimation",
+    )
+
     group = parser.add_argument_group("Logging")
     group.add_argument(
         "--log-level",
@@ -84,39 +117,45 @@ def main(argv):
     args = parse_args(argv)
     log = setup_logging(level=args.log_level)
 
-    estimator = Estimator(
-        constrain_n0=args.constrain_N0,
-        segment_log_n0=args.segment_log_N0,
-        n0=args.N0,
-    )
-
-    log.info("Estimating growth curves ..")
+    curves = []
     for filepath in args.infiles:
         log.info("Reading curves from '%s", filepath)
         with TSVReader(filepath) as reader:
-            curves = reader.read()
+            for idx, (name, curve) in enumerate(reader.read()):
+                if curve.empty:
+                    log.warning("Skipping empty curve %r", name)
+                    continue
 
-        annotated_curves = {}
-        for name, curve in curves:
-            if curve.empty:
-                log.warning("Skipping empty curve %r", name)
-                continue
+                curves.append((filepath, idx, name, curve))
+    log.info("Collected a total of %i growth curves", len(curves))
 
-            log.info("Estimating growth for curve %r", name)
-            annotated_curves[name] = estimator.growth(
-                normalize_time_unit(curve, args.input_time_unit)
-            )
+    # Dont spawn more processes than tasks
+    args.threads = max(1, min(args.threads, len(curves)))
 
+    log.info("Annotating growth curves ..")
+    annotated_curves = {filepath: [] for filepath in args.infiles}
+    with multiprocessing.Pool(processes=args.threads, initializer=init_worker) as pool:
+        async_calculation = pool.imap_unordered(EstimatorWrapper(args), curves)
+
+        for nth, (filepath, idx, name, curve) in enumerate(async_calculation, start=1):
+            log.info("Annotated curve %i of %i: %s", nth, len(curves), name)
+
+            annotated_curves[filepath].append((idx, name, curve))
+
+    for filepath in args.infiles:
         output_filepath = filepath.with_suffix(args.output_suffix + ".tsv")
+        log.info("Writing annotated curves to '%s'", output_filepath)
+
         with TSVWriter(output_filepath, args.output_exclude_default_phase) as outwriter:
-            for name, annotated_curve in annotated_curves.items():
+            for _, name, annotated_curve in sorted(annotated_curves[filepath]):
                 outwriter.write(name, annotated_curve)
 
         if args.figures:
             figure_filepath = filepath.with_suffix(args.output_suffix + ".pdf")
+            log.info("Writing PDFs to '%s'", figure_filepath)
 
             with PDFWriter(figure_filepath) as figwriter:
-                for name, annotated_curve in annotated_curves.items():
+                for _, name, annotated_curve in sorted(annotated_curves[filepath]):
                     figwriter.write(name, annotated_curve)
 
     log.info("Done ..")

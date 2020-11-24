@@ -91,7 +91,9 @@ class Estimator:
 
         return phases
 
-    def growth(self, curve: pandas.Series) -> AnnotatedGrowthCurve:
+    def growth(
+        self, curve: pandas.Series, name: str = "untitled curve"
+    ) -> AnnotatedGrowthCurve:
         series = curve.dropna()
 
         n_hours = int(
@@ -99,7 +101,7 @@ class Estimator:
         )
 
         if n_hours == 0:
-            self._log.warning("Less than 1 data-point/hour; cannot proceed")
+            self._log.warning("Fewer than one Data-points/hour for %s", name)
             return AnnotatedGrowthCurve(series, [], [])
 
         if n_hours % 2 == 0:
@@ -109,20 +111,18 @@ class Estimator:
 
         # NOTE workaround for issue with negative curves
         if len(series[series > 0]) < 3:
-            self._log.warning("Less than 3 data-points post filtering; cannot proceeed")
+            self._log.warning("Fewer than three positive data-points for %s", name)
             return AnnotatedGrowthCurve(series, outliers, [])
 
         if self._segment_log_n0:
             series_log_n0 = numpy.log(series - self._n0).dropna()
             smooth_series = segment_spline_smoothing(series, series_log_n0)
         else:
-            smooth_series = segment_spline_smoothing(
-                series,
-            )
+            smooth_series = segment_spline_smoothing(series)
 
         phases = []
         if len(smooth_series) < n_hours:
-            self._log.warning("Insufficient data, cannot determine growth")
+            self._log.warning("Insufficient smoothed data for %s", name)
             return AnnotatedGrowthCurve(series, [], [])
         raw_phases = self._find_growth_phases(smooth_series, window=n_hours)
 

@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest import TestCase
 
 import numpy
@@ -60,83 +61,82 @@ class CroissanceTestCase(TestCase):
         self.assertEqual(hours.growth_phases, minutes.growth_phases)
 
     def test_process_curve_basic(self):
-        with open("./test.basic.pdf", "wb") as f:
-            with PDFWriter(f) as doc:
-                mu = 0.5
-                pph = 4.0
-                curve = pandas.Series(
-                    data=[numpy.exp(mu * i / pph) for i in range(100)],
-                    index=[i / pph for i in range(100)],
-                )
+        with PDFWriter(Path("test.basic.pdf")) as doc:
+            mu = 0.5
+            pph = 4.0
+            curve = pandas.Series(
+                data=[numpy.exp(mu * i / pph) for i in range(100)],
+                index=[i / pph for i in range(100)],
+            )
 
-                result = process_curve(curve, constrain_n0=True, n0=0.0)
+            result = process_curve(curve, constrain_n0=True, n0=0.0)
 
-                # self.assertAlmostEqual(mu, slope, 6, msg='growth rate (mu)={}'.format(mu))
+            # self.assertAlmostEqual(mu, slope, 6, msg='growth rate (mu)={}'.format(mu))
 
-                doc.write("#0 n0=1", result)
-                print(result.growth_phases)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
-                self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 3)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            doc.write("#0 n0=1", result)
+            print(result.growth_phases)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
+            self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 3)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
-                result = process_curve(curve, constrain_n0=False)
-                doc.write("#0 n0=auto", result)
-                print(result.growth_phases)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
-                self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            result = process_curve(curve, constrain_n0=False)
+            doc.write("#0 n0=auto", result)
+            print(result.growth_phases)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
+            self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
-                curve = pandas.Series(
-                    data=(
-                        [1.0] * 5
-                        + [numpy.exp(mu * i / pph) for i in range(25)]
-                        + [numpy.exp(mu * 24 / pph)] * 20
-                    ),
-                    index=([i / pph for i in range(50)]),
-                )
+            curve = pandas.Series(
+                data=(
+                    [1.0] * 5
+                    + [numpy.exp(mu * i / pph) for i in range(25)]
+                    + [numpy.exp(mu * 24 / pph)] * 20
+                ),
+                index=([i / pph for i in range(50)]),
+            )
 
-                result = process_curve(curve, constrain_n0=True, n0=0.0)
-                doc.write("#1 n0=0", result)
-                print(result.growth_phases)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
-                self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 3)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            result = process_curve(curve, constrain_n0=True, n0=0.0)
+            doc.write("#1 n0=0", result)
+            print(result.growth_phases)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
+            self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 3)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
-                result = process_curve(curve, constrain_n0=False)
-                doc.write("#1 n0=auto", result)
-                print(result.growth_phases)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 1)
-                self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            result = process_curve(curve, constrain_n0=False)
+            doc.write("#1 n0=auto", result)
+            print(result.growth_phases)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 1)
+            self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
-                mu = 0.20
-                curve = pandas.Series(
-                    data=(
-                        [i / 10.0 for i in range(10)]
-                        + [numpy.exp(mu * i / pph) for i in range(25)]
-                        + [numpy.exp(mu * 24 / pph)] * 15
-                    ),
-                    index=([i / pph for i in range(50)]),
-                )
+            mu = 0.20
+            curve = pandas.Series(
+                data=(
+                    [i / 10.0 for i in range(10)]
+                    + [numpy.exp(mu * i / pph) for i in range(25)]
+                    + [numpy.exp(mu * 24 / pph)] * 15
+                ),
+                index=([i / pph for i in range(50)]),
+            )
 
-                result = process_curve(curve, constrain_n0=True, n0=0.0)
-                doc.write("#2 n0=0", result)
-                print(result.growth_phases)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
-                self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 6)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            result = process_curve(curve, constrain_n0=True, n0=0.0)
+            doc.write("#2 n0=0", result)
+            print(result.growth_phases)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
+            self.assertAlmostEqual(0.0, result.growth_phases[0].n0, 6)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
-                result = process_curve(curve, constrain_n0=False)
-                doc.write("#2 n0=auto", result)
-                self.assertEqual(len(result.growth_phases), 1)
-                self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
-                self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
-                self.assertTrue(result.growth_phases[0].SNR > 1000)
+            result = process_curve(curve, constrain_n0=False)
+            doc.write("#2 n0=auto", result)
+            self.assertEqual(len(result.growth_phases), 1)
+            self.assertAlmostEqual(mu, result.growth_phases[0].slope, 2)
+            self.assertTrue(-0.25 < result.growth_phases[0].n0 < 0.25)
+            self.assertTrue(result.growth_phases[0].SNR > 1000)
 
     def test_process_curve_wrong_time_unit(self):
         mu = 0.5

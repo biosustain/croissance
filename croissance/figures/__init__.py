@@ -6,8 +6,9 @@ from croissance.estimation import AnnotatedGrowthCurve
 
 
 class PDFWriter:
-    def __init__(self, file, include_shifted_exponentials: bool = False):
-        self.doc = PdfPages(file)
+    def __init__(self, filepath, include_shifted_exponentials: bool = False):
+        self._handle = filepath.open("wb")
+        self._doc = PdfPages(self._handle)
         self._include_shifted_exponentials = include_shifted_exponentials
 
     def write(self, name: str, curve: AnnotatedGrowthCurve):
@@ -117,7 +118,7 @@ class PDFWriter:
             axes[0].set_ylim([max(curve.series.min(), -2.5), curve.series.max()])
             axes[1].set_ylim([0.1, curve.series.max()])
         finally:
-            self.doc.savefig(fig)
+            self._doc.savefig(fig)
             plt.close()
 
     def __enter__(self):
@@ -127,4 +128,5 @@ class PDFWriter:
         self.close()
 
     def close(self):
-        self.doc.close()
+        self._doc.close()
+        self._handle.close()

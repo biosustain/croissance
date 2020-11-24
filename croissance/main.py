@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import collections
 import logging
 import sys
 
@@ -84,17 +85,17 @@ def main(argv):
     args = parse_args(argv)
     log = setup_logging(level=args.log_level)
 
-    reader = TSVReader()
     estimator = Estimator(
         constrain_n0=args.constrain_N0,
         segment_log_n0=args.segment_log_N0,
         n0=args.N0,
     )
 
+    log.info("Estimating growth curves ..")
     for filepath in args.infiles:
         log.info("Reading curves from '%s", filepath)
-        with filepath.open("rt") as infile:
-            curves = list(reader.read(infile))
+        with TSVReader(filepath) as reader:
+            curves = reader.read()
 
         annotated_curves = {}
         for name, curve in curves:
@@ -108,20 +109,16 @@ def main(argv):
             )
 
         output_filepath = filepath.with_suffix(args.output_suffix + ".tsv")
-        with output_filepath.open("wt") as outfile:
-            outwriter = TSVWriter(
-                outfile, include_default_phase=not args.output_exclude_default_phase
-            )
-
+        with TSVWriter(output_filepath, args.output_exclude_default_phase) as outwriter:
             for name, annotated_curve in annotated_curves.items():
                 outwriter.write(name, annotated_curve)
 
         if args.figures:
             figure_filepath = filepath.with_suffix(args.output_suffix + ".pdf")
-            with figure_filepath.open("wb") as figfile:
-                with PDFWriter(figfile) as figwriter:
-                    for name, annotated_curve in annotated_curves.items():
-                        figwriter.write(name, annotated_curve)
+
+            with PDFWriter(figure_filepath) as figwriter:
+                for name, annotated_curve in annotated_curves.items():
+                    figwriter.write(name, annotated_curve)
 
     log.info("Done ..")
 

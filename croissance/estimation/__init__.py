@@ -58,8 +58,7 @@ class Estimator:
     ):
         self._log = logging.getLogger(__name__)
         self._segment_log_n0 = segment_log_n0
-        self._constrain_n0 = constrain_n0
-        self._n0 = n0
+        self._n0 = n0 if constrain_n0 else None
 
     def _find_growth_phases(
         self, curve: "pandas.Series", window
@@ -141,14 +140,9 @@ class Estimator:
             if phase.duration < defaults.PHASE_MINIMUM_DURATION_HOURS:
                 continue
 
-            if self._constrain_n0:
-                slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
-                    phase_series, n0=self._n0
-                )
-            else:
-                slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
-                    phase_series
-                )
+            slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
+                phase_series, n0=self._n0
+            )
 
             # skip phases whose actual slope is below the limit
             if slope < max(0.0, defaults.PHASE_MINIMUM_SLOPE):

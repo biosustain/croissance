@@ -50,8 +50,7 @@ def parse_args(argv):
     parser.add_argument("--output-suffix", type=str, default=".output")
     parser.add_argument(
         "--output-exclude-default-phase",
-        type=bool,
-        default=False,
+        action="store_true",
         help="Do not output phase '0' for each curve",
     )
     parser.add_argument(

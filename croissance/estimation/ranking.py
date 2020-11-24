@@ -11,7 +11,7 @@ def rank_phases(phases, weights, thresholds):
     values = {}
     scores = []
 
-    for attribute, weight in weights.items():
+    for attribute in weights:
         values[attribute] = [getattr(phase, attribute) for phase in phases]
 
     for phase in phases:

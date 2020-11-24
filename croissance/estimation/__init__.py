@@ -5,14 +5,8 @@ from operator import attrgetter
 import numpy
 import pandas
 
-from croissance.estimation.defaults import (
-    MINIMUM_VALID_OD,
-    RESAMPLE_POINTS_PER_HOUR,
-    MINIMUM_VALID_SLOPE,
-    MINIMUM_PHASE_LENGTH,
-    PHASE_MIN_DELTA_LOG_OD,
-    CURVE_MINIMUM_DURATION_HOURS,
-)
+import croissance.estimation.defaults as defaults
+
 from croissance.estimation.outliers import remove_outliers
 from croissance.estimation.ranking import rank_phases
 from croissance.estimation.regression import fit_exponential
@@ -61,7 +55,7 @@ AnnotatedGrowthCurve = namedtuple(
 )
 
 
-class Estimator(object):
+class Estimator:
     def __init__(
         self,
         *,
@@ -111,7 +105,7 @@ class Estimator(object):
         series = curve.dropna()
 
         n_hours = int(
-            numpy.round(points_per_hour(series) * CURVE_MINIMUM_DURATION_HOURS)
+            numpy.round(points_per_hour(series) * defaults.CURVE_MINIMUM_DURATION_HOURS)
         )
 
         if n_hours == 0:
@@ -157,11 +151,11 @@ class Estimator(object):
             #     continue
 
             if self._constrain_n0:
-                slope, intercept, n0, snr, fallback_linear_method = fit_exponential(
+                slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
                     phase_series, n0=self._n0
                 )
             else:
-                slope, intercept, n0, snr, fallback_linear_method = fit_exponential(
+                slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
                     phase_series
                 )
 

@@ -110,7 +110,7 @@ def main():
             "\nEmpty cells were found and discarded:\n",
             "\n".join(
                 [
-                    (infile.name + "\t" + name)
+                    (key + "\t" + name)
                     for key, names in empties.items()
                     for name in names
                 ]

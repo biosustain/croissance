@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from croissance.estimation import AnnotatedGrowthCurve
 
 
-class PDFWriter(object):
+class PDFWriter:
     def __init__(self, file, include_shifted_exponentials: bool = False):
         self.doc = PdfPages(file)
         self._include_shifted_exponentials = include_shifted_exponentials

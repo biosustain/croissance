@@ -3,7 +3,7 @@ import csv
 from croissance.estimation import GrowthPhase, AnnotatedGrowthCurve
 
 
-class TSVWriter(object):
+class TSVWriter:
     def __init__(self, file, include_default_phase: bool = True):
         writer = csv.writer(file, delimiter="\t", quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["name", "phase", "slope", "intercept", "N0", "SNR", "rank"])

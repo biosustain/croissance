@@ -25,7 +25,7 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = p0[:2]
 
     try:
-        popt, pcov = curve_fit(
+        popt, _pcov = curve_fit(
             fit_fn,
             series.index,
             series.values,
@@ -60,7 +60,7 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = (numpy.exp(c), slope)
 
     try:
-        popt, pcov = curve_fit(
+        popt, _pcov = curve_fit(
             fit_fn,
             series.index,
             series.values,

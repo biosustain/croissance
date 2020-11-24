@@ -1,6 +1,5 @@
 import numpy
 import pandas
-from scipy.interpolate import InterpolatedUnivariateSpline
 from scipy.signal import savgol_filter
 
 
@@ -9,26 +8,6 @@ def points_per_hour(series):
         return len(series)
 
     return 1 / numpy.median(series.index[1:] - series.index[:-1])
-
-
-def resample(series, *, factor=10, size=None):
-    """
-    Returns a new series re-sampled to a given number of points.
-
-    :param series:
-    :param factor: a number of points per unit time to scale the series to.
-    :param size: a number of points to scale the series to.
-    :return:
-    """
-    series = series.dropna()
-    start, end = series.index[0], series.index[-1]
-
-    if size is None:
-        size = (end - start) * factor
-
-    index = numpy.linspace(start, end, size)
-    spline = InterpolatedUnivariateSpline(series.index, series.values)
-    return pandas.Series(index=index, data=spline(index))
 
 
 def savitzky_golay(series, *args, **kwargs):

@@ -18,10 +18,13 @@ def segment_by_std_dev(series, increment=2, maximum=20):
 
     for i in range(start, duration, increment):
         for size in range(1, maximum + 1):
-            window = detrend(series[i : i + size * increment])
-            heappush(
-                windows, (window.std() / (size * increment), i, i + size * increment)
-            )
+            window = series[i : i + size * increment]
+            if not window.empty:
+                window = detrend(window)
+                heappush(
+                    windows,
+                    (window.std() / (size * increment), i, i + size * increment),
+                )
 
     segments = []
     spots = set()

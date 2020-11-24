@@ -1,38 +1,20 @@
-from operator import itemgetter
-
-import numpy
+from operator import attrgetter
 
 
 def score(values, q):
-    return (q - numpy.min(values)) / (numpy.max(values) - numpy.min(values)) * 100
+    return (q - min(values)) / (max(values) - min(values)) * 100
 
 
 def rank_phases(phases, weights, thresholds):
     values = {}
-    scores = []
-
     for attribute in weights:
         values[attribute] = [getattr(phase, attribute) for phase in phases]
+        values[attribute].append(thresholds[attribute])
 
     for phase in phases:
-        scores.append(
-            (
-                sum(
-                    weight
-                    * score(
-                        [thresholds[attribute]] + values[attribute],
-                        getattr(phase, attribute),
-                    )
-                    for attribute, weight in weights.items()
-                )
-                / sum(weights.values()),
-                phase,
-            )
-        )
+        phase.attributes["rank"] = sum(
+            weight * score(values[attribute], getattr(phase, attribute))
+            for attribute, weight in weights.items()
+        ) / sum(weights.values())
 
-    ranked_phases = []
-    for rank, phase in sorted(scores, key=itemgetter(0), reverse=True):
-        phase.attributes["rank"] = rank
-        ranked_phases.append(phase)
-
-    return ranked_phases
+    return sorted(phases, key=attrgetter("rank"), reverse=True)

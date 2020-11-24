@@ -43,6 +43,11 @@ def _do_plot_processed_curve(curve, axis, yscale):
         linestyle="None",
     )
 
+    # Lock x/y limits to those auto-calculated prior to the addition of growth curves
+    axis.set_yscale(yscale)
+    axis.set_xlim(axis.get_xlim())
+    axis.set_ylim(axis.get_ylim())
+
     colors = ["b", "g", "c", "m", "y", "k"]
 
     for i, phase in enumerate(curve.growth_phases):
@@ -85,14 +90,3 @@ def _do_plot_processed_curve(curve, axis, yscale):
 
         axis.plot(curve.series.index, gf(curve.series.index), color=color, linewidth=1)
         axis.plot(phase_series.index, gf(phase_series.index), color=color, linewidth=2)
-
-    yvalues = curve.series
-    ymargin = (yvalues.max() - yvalues.min()) * 0.025
-    yvalues_min = 0.01 if yscale == "log" else float("-inf")
-    axis.set_ylim([max(yvalues.min() - ymargin, yvalues_min), yvalues.max() + ymargin])
-
-    xvalues = curve.series.index
-    xmargin = (xvalues.max() - xvalues.min()) * 0.025
-    axis.set_xlim([xvalues.min() - xmargin, xvalues.max() + xmargin])
-
-    axis.set_yscale(yscale)

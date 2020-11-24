@@ -8,13 +8,9 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 
 def segment_by_std_dev(series, increment=2, maximum=20):
     """
-    Divides a series into segments, minimizing standard deviation over window size. Windows are of varying size from
-    `increment` to `maximum * increment` at each offset `increment` within the series.
-
-    :param series:
-    :param increment:
-    :param maximum:
-    :return:
+    Divides a series into segments, minimizing standard deviation over window size.
+    Windows are of varying size from `increment` to `maximum * increment` at each
+    offset `increment` within the series.
     """
     start = int(series.index.min())
     duration = int(series.index[-2])
@@ -58,15 +54,13 @@ def window_median(window, start, end):
 
 def segment_points(series, segments):
     """
-    Picks knot points for an interpolating spline along a series of segments according to these rules:
+    Picks knot points for an interpolating spline along a series of segments according
+    to these rules:
 
     - For small segments, add a knot in the center of the segment
-    - For medium-sized segments, add a knot each near the beginning and end of the segment
-    - For large segments, add a knot a knot each near the beginning and end of the segment, and one in the center.
-
-    :param series:
-    :param segments:
-    :return:
+    - For medium-sized segments, add a knot near the beginning and end of the segment
+    - For large segments, add a knot a knot near the beginning and end of the segment,
+      and one in the center.
     """
     out = [(series.index[0], numpy.median(series[: series.index[0] + 1]))]
 

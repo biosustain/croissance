@@ -9,9 +9,9 @@ def exponential(x, a, b, c):
 
 def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
     """
-    Fits an exponential to a series. First attempts an exponential fit in linear space using p0, then falls back to a
-    fit in log space to attempt to find parameters p0 for a linear fit; if all else fails returns the linear fit.
-
+    Fits an exponential to a series. First attempts an exponential fit in linear space
+    using p0, then falls back to a fit in log space to attempt to find parameters p0
+    for a linear fit; if all else fails returns the linear fit.
     """
 
     if n0 is None:

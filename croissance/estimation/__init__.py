@@ -141,11 +141,6 @@ class Estimator:
             if phase.duration < defaults.PHASE_MINIMUM_DURATION_HOURS:
                 continue
 
-            # snr_estimate, slope_estimate = signal_noise_ratio_estimate(phase_series.values)
-            # # skip any growth phase with <strike>an estimated S/N ratio < 1 or</strike> negative slope.
-            # if slope_estimate <= 0:
-            #     continue
-
             if self._constrain_n0:
                 slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
                     phase_series, n0=self._n0

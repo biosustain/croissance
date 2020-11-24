@@ -6,7 +6,7 @@ class TSVReader:
         self._filepath = filepath
 
     def read(self):
-        with self._filepath.open("rt") as handle:
+        with open(self._filepath, "rt") as handle:
             data = pandas.read_csv(handle, sep="\t", header=0, index_col=0)
 
         return [(name, data[name].dropna()) for name in data.columns]

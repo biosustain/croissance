@@ -8,7 +8,7 @@ from croissance.figures.plot import plot_processed_curve
 
 class PDFWriter:
     def __init__(self, filepath, include_shifted_exponentials: bool = False):
-        self._handle = filepath.open("wb")
+        self._handle = open(filepath, "wb")
         self._doc = PdfPages(self._handle)
         self._include_shifted_exponentials = include_shifted_exponentials
 

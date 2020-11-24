@@ -6,7 +6,7 @@ from croissance.estimation import GrowthPhase, AnnotatedGrowthCurve
 class TSVWriter:
     def __init__(self, filepath, exclude_default_phase: bool = True):
         self._exclude_default_phase = exclude_default_phase
-        self._handle = filepath.open("wt")
+        self._handle = open(filepath, "wt")
         self._writer = csv.writer(
             self._handle, delimiter="\t", quoting=csv.QUOTE_MINIMAL
         )

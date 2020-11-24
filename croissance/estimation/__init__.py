@@ -106,7 +106,7 @@ class Estimator:
                 "`--input-time-unit minutes` if times are represented in minutes.",
                 name,
             )
-            return AnnotatedGrowthCurve(series, [], [])
+            return AnnotatedGrowthCurve(series, pandas.Series(dtype="float64"), [])
 
         if n_hours % 2 == 0:
             n_hours += 1

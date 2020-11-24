@@ -10,14 +10,8 @@ import croissance.estimation.defaults as defaults
 from croissance.estimation.outliers import remove_outliers
 from croissance.estimation.ranking import rank_phases
 from croissance.estimation.regression import fit_exponential
-from croissance.estimation.smoothing import median_smoothing
 from croissance.estimation.smoothing.segments import segment_spline_smoothing
-from croissance.estimation.util import (
-    savitzky_golay,
-    resample,
-    with_overhangs,
-    points_per_hour,
-)
+from croissance.estimation.util import savitzky_golay, points_per_hour
 
 
 class RawGrowthPhase(namedtuple("RawGrowthPhase", ("start", "end"))):

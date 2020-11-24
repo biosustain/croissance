@@ -86,8 +86,6 @@ def _do_plot_processed_curve(curve, axis, yscale):
         axis.plot(curve.series.index, gf(curve.series.index), color=color, linewidth=1)
         axis.plot(phase_series.index, gf(phase_series.index), color=color, linewidth=2)
 
-    axis.set_xlim(curve.series.index[0], curve.series.index[-1])
-
     yvalues = curve.series
     ymargin = (yvalues.max() - yvalues.min()) * 0.025
     yvalues_min = 0.01 if yscale == "log" else float("-inf")

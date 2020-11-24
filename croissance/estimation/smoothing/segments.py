@@ -22,8 +22,10 @@ def segment_by_std_dev(series, increment=2, maximum=20):
 
     for i in range(start, duration, increment):
         for size in range(1, maximum + 1):
-            window = detrend(series[i:i + size*increment])
-            heappush(windows, (window.std() / (size*increment), i, i + size*increment))
+            window = detrend(series[i : i + size * increment])
+            heappush(
+                windows, (window.std() / (size * increment), i, i + size * increment)
+            )
 
     segments = []
     spots = set()
@@ -66,7 +68,7 @@ def segment_points(series, segments):
     :param segments:
     :return:
     """
-    out = [(series.index[0], numpy.median(series[:series.index[0] + 1]))]
+    out = [(series.index[0], numpy.median(series[: series.index[0] + 1]))]
 
     for start, end in segments:
         window = series[start:end]
@@ -75,16 +77,18 @@ def segment_points(series, segments):
             continue
 
         if end - start > 5:
-            out.append(window_median(series[start:start + 2], start, start + 2))
+            out.append(window_median(series[start : start + 2], start, start + 2))
 
             if end - start > 11:
-                out.append(window_median(series[start + 2:end - 2], start + 2, end - 2))
+                out.append(
+                    window_median(series[start + 2 : end - 2], start + 2, end - 2)
+                )
 
-            out.append(window_median(series[end - 2:end], end - 2, end))
+            out.append(window_median(series[end - 2 : end], end - 2, end))
         else:
             out.append(window_median(window, start, end))
 
-    out += [(series.index[-1], numpy.max(series[series.index[0] - 1:]))]
+    out += [(series.index[-1], numpy.max(series[series.index[0] - 1 :]))]
 
     index, data = zip(*out)
     return pandas.Series(index=index, data=data)

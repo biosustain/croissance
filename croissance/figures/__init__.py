@@ -10,12 +10,10 @@ class PDFWriter(object):
         self.doc = PdfPages(file)
         self._include_shifted_exponentials = include_shifted_exponentials
 
-    def write(self,
-              name: str,
-              curve: AnnotatedGrowthCurve):
+    def write(self, name: str, curve: AnnotatedGrowthCurve):
 
         fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(16, 16))
-        axes[1].set_yscale('log')
+        axes[1].set_yscale("log")
 
         try:
             plt.title(name)
@@ -24,21 +22,25 @@ class PDFWriter(object):
                 return
 
             for axis in axes:
-                axis.plot(curve.series.index,
-                          curve.series.values,
-                          color='black',
-                          marker='.',
-                          markersize=5,
-                          linestyle='None')
+                axis.plot(
+                    curve.series.index,
+                    curve.series.values,
+                    color="black",
+                    marker=".",
+                    markersize=5,
+                    linestyle="None",
+                )
 
-                axis.plot(curve.outliers.index,
-                          curve.outliers.values,
-                          color='red',
-                          marker='.',
-                          markersize=5,
-                          linestyle='None')
+                axis.plot(
+                    curve.outliers.index,
+                    curve.outliers.values,
+                    color="red",
+                    marker=".",
+                    markersize=5,
+                    linestyle="None",
+                )
 
-            colors = ['b', 'g', 'c', 'm', 'y', 'k']
+            colors = ["b", "g", "c", "m", "y", "k"]
 
             for i, phase in enumerate(curve.growth_phases):
                 color = colors[i % len(colors)]
@@ -51,30 +53,63 @@ class PDFWriter(object):
                 def gf(x):
                     return a * numpy.exp(phase.slope * x) + phase.n0
 
-                phase_series = curve.series[phase.start:phase.end]
+                phase_series = curve.series[phase.start : phase.end]
 
                 for axis in axes:
                     if self._include_shifted_exponentials:
-                        axis.plot(phase_series.index,
-                                  phase_series.values - phase.n0,
-                                  marker='.', linewidth=0, color='red')
+                        axis.plot(
+                            phase_series.index,
+                            phase_series.values - phase.n0,
+                            marker=".",
+                            linewidth=0,
+                            color="red",
+                        )
 
-                        axis.plot(phase_series.index, gf(phase_series.index) - phase.n0,
-                                  marker=None, linewidth=2, color='red')
+                        axis.plot(
+                            phase_series.index,
+                            gf(phase_series.index) - phase.n0,
+                            marker=None,
+                            linewidth=2,
+                            color="red",
+                        )
 
-                    axis.axhline(y=phase.n0, marker=None, linewidth=1, linestyle='dashed', color=color)
-                    axis.axvline(x=phase.intercept, marker=None, linewidth=1, linestyle='dashed', color=color)
+                    axis.axhline(
+                        y=phase.n0,
+                        marker=None,
+                        linewidth=1,
+                        linestyle="dashed",
+                        color=color,
+                    )
+                    axis.axvline(
+                        x=phase.intercept,
+                        marker=None,
+                        linewidth=1,
+                        linestyle="dashed",
+                        color=color,
+                    )
 
-                    axis.plot(phase_series.index,
-                              phase_series.values,
-                              marker=None,
-                              linewidth=15,
-                              color=color,
-                              solid_capstyle='round',
-                              alpha=0.2)
+                    axis.plot(
+                        phase_series.index,
+                        phase_series.values,
+                        marker=None,
+                        linewidth=15,
+                        color=color,
+                        solid_capstyle="round",
+                        alpha=0.2,
+                    )
 
-                    axis.plot(curve.series.index, gf(curve.series.index), color=color, linewidth=1)
-                    axis.plot(phase_series.index, gf(phase_series.index), color=color, linewidth=2)
+                    axis.plot(
+                        curve.series.index,
+                        gf(curve.series.index),
+                        color=color,
+                        linewidth=1,
+                    )
+                    axis.plot(
+                        phase_series.index,
+                        gf(phase_series.index),
+                        color=color,
+                        linewidth=2,
+                    )
 
             for axis in axes:
                 axis.set_xlim(curve.series.index[0], curve.series.index[-1])

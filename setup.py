@@ -19,37 +19,37 @@ import codecs
 from setuptools import setup, find_packages
 
 setup(
-    name='croissance',
-    version='1.1.1',
-    packages=find_packages(exclude=['*tests*']),
-    url='https://github.com/biosustain/croissance',
-    author='Lars Schöning',
-    author_email='lays@biosustain.dtu.dk',
-    description='A tool for estimating growth rates in growth curves.',
-    long_description=codecs.open('README.rst', encoding='utf-8').read(),
-    license='Apache License Version 2.0',
+    name="croissance",
+    version="1.1.1",
+    packages=find_packages(exclude=["*tests*"]),
+    url="https://github.com/biosustain/croissance",
+    author="Lars Schöning",
+    author_email="lays@biosustain.dtu.dk",
+    description="A tool for estimating growth rates in growth curves.",
+    long_description=codecs.open("README.rst", encoding="utf-8").read(),
+    license="Apache License Version 2.0",
     entry_points={
-        'console_scripts': [
-            'croissance = croissance.__main__:main',
+        "console_scripts": [
+            "croissance = croissance.__main__:main",
         ],
     },
-    test_suite='nose.collector',
+    test_suite="nose.collector",
     tests_require=[
-        'nose>=1.1.2',
+        "nose>=1.1.2",
     ],
     install_requires=[
-        'numpy>=1.9.1',
-        'pandas>=0.18.0',
-        'scipy>=0.14.0',
-        'matplotlib>=1.4.3',
-        'tqdm>=4.11.2'
+        "numpy>=1.9.1",
+        "pandas>=0.18.0",
+        "scipy>=0.14.0",
+        "matplotlib>=1.4.3",
+        "tqdm>=4.11.2",
     ],
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Topic :: Utilities',
-        'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'License :: OSI Approved :: Apache Software License',
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Utilities",
+        "Intended Audience :: Science/Research",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "License :: OSI Approved :: Apache Software License",
     ],
 )

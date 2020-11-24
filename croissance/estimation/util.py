@@ -5,7 +5,9 @@ from scipy.signal import savgol_filter
 
 
 def points_per_hour(series):
-    return 1 / numpy.median([series.index[i] - series.index[i - 1] for i in range(1, len(series))])
+    return 1 / numpy.median(
+        [series.index[i] - series.index[i - 1] for i in range(1, len(series))]
+    )
 
 
 def resample(series, *, factor=10, size=None):
@@ -29,20 +31,25 @@ def resample(series, *, factor=10, size=None):
 
 
 def savitzky_golay(series, *args, **kwargs):
-    return pandas.Series(index=series.index, data=savgol_filter(series.values, *args, **kwargs))
+    return pandas.Series(
+        index=series.index, data=savgol_filter(series.values, *args, **kwargs)
+    )
 
 
 def with_overhangs(values, overhang_size):
-    start_overhang = numpy.repeat([numpy.median(values[0:overhang_size // 2 + 1])], overhang_size)
-    end_overhang = numpy.repeat([numpy.max(values[-1 - overhang_size // 2:-1])], overhang_size)
+    start_overhang = numpy.repeat(
+        [numpy.median(values[0 : overhang_size // 2 + 1])], overhang_size
+    )
+    end_overhang = numpy.repeat(
+        [numpy.max(values[-1 - overhang_size // 2 : -1])], overhang_size
+    )
     return pandas.Series(numpy.concatenate([start_overhang, values, end_overhang]))
 
 
-def normalize_time_unit(curve: pandas.Series, unit: str = 'hours'):
-    if unit == 'hours':
+def normalize_time_unit(curve: pandas.Series, unit: str = "hours"):
+    if unit == "hours":
         return curve
-    elif unit == 'minutes':
-        return pandas.Series(index=curve.index / 60., data=curve.values)
+    elif unit == "minutes":
+        return pandas.Series(index=curve.index / 60.0, data=curve.values)
     else:
         raise NotImplementedError("Unsupported time unit: '{}'".format(unit))
-

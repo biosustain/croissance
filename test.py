@@ -4,10 +4,10 @@ from unittest import TestCase
 import numpy
 import pandas
 
-from croissance import process_curve, AnnotatedGrowthCurve
+from croissance import process_curve
 from croissance.estimation import fit_exponential
 from croissance.estimation.util import normalize_time_unit
-from croissance.figures import PDFWriter
+from croissance.figures.writer import PDFWriter
 
 
 class CroissanceTestCase(TestCase):

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import collections
 import logging
 import sys
 
@@ -10,7 +9,7 @@ import coloredlogs
 
 from croissance import Estimator
 from croissance.estimation.util import normalize_time_unit
-from croissance.figures import PDFWriter
+from croissance.figures.writer import PDFWriter
 from croissance.formats.input import TSVReader
 from croissance.formats.output import TSVWriter
 

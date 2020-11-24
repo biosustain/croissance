@@ -1,12 +1,13 @@
-from collections import namedtuple
+import croissance.figures.plot
 
-from croissance.estimation import Estimator
+from croissance.estimation import Estimator, AnnotatedGrowthCurve
 from croissance.estimation.util import normalize_time_unit
 
 
-AnnotatedGrowthCurve = namedtuple(
-    "AnnotatedGrowthCurve", ("series", "outliers", "growth_phases")
-)
+__all__ = [
+    "plot_processed_curve",
+    "process_curve",
+]
 
 
 def process_curve(
@@ -25,3 +26,17 @@ def process_curve(
         constrain_n0=constrain_n0,
         n0=n0,
     ).growth(curve)
+
+
+def plot_processed_curve(
+    curve: AnnotatedGrowthCurve,
+    name: str = None,
+    figsize=(10, 10),
+    include_shifted_exponentials: bool = False,
+):
+    return croissance.figures.plot.plot_processed_curve(
+        curve=curve,
+        name=name,
+        figsize=figsize,
+        include_shifted_exponentials=include_shifted_exponentials,
+    )

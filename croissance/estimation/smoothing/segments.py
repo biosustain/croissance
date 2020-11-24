@@ -57,23 +57,21 @@ def segment_points(series, segments):
     """
     out = [(series.index[0], numpy.median(series[: series.index[0] + 1]))]
 
-    for start, end in segments:
+    def _add_knot(start, end):
         window = series[start:end]
+        if not window.empty:
+            out.append(window_median(window, start, end))
 
-        if window.empty:
-            continue
-
+    for start, end in segments:
         if end - start > 5:
-            out.append(window_median(series[start : start + 2], start, start + 2))
+            _add_knot(start, start + 2)
 
             if end - start > 11:
-                out.append(
-                    window_median(series[start + 2 : end - 2], start + 2, end - 2)
-                )
+                _add_knot(start + 2, end - 2)
 
-            out.append(window_median(series[end - 2 : end], end - 2, end))
+            _add_knot(end - 2, end)
         else:
-            out.append(window_median(window, start, end))
+            _add_knot(start, end)
 
     out += [(series.index[-1], numpy.max(series[series.index[0] - 1 :]))]
 

@@ -91,6 +91,13 @@ def parse_args(argv):
         action="store_true",
         help="Renders a PDF file with figures for each curve",
     )
+    parser.add_argument(
+        "--figures-yscale",
+        type=str.lower,
+        default="both",
+        choices=("log", "linear", "both"),
+        help="Yscale(s) for figures. If both, then two plots are generated per curve",
+    )
 
     parser.add_argument(
         "--threads",
@@ -167,7 +174,7 @@ def main(argv):
             figure_filepath = filepath.with_suffix(args.output_suffix + ".pdf")
             log.info("Writing PDFs to '%s'", figure_filepath)
 
-            with PDFWriter(figure_filepath) as figwriter:
+            with PDFWriter(figure_filepath, yscale=args.figures_yscale) as figwriter:
                 for _, name, annotated_curve in sorted(annotated_curves[filepath]):
                     figwriter.write(name, annotated_curve)
 

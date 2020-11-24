@@ -7,12 +7,16 @@ from croissance.figures.plot import plot_processed_curve
 
 
 class PDFWriter:
-    def __init__(self, filepath):
+    def __init__(self, filepath, yscale="both"):
         self._handle = open(filepath, "wb")
         self._doc = PdfPages(self._handle)
+        self._yscale = yscale
 
     def write(self, name: str, curve: AnnotatedGrowthCurve):
-        fig, _axes = plot_processed_curve(curve=curve, name=name)
+        fig, _axes = plot_processed_curve(curve=curve, name=name, yscale=self._yscale)
+
+        fig.set_figwidth(16)
+        fig.set_figheight(16 if self._yscale == "both" else 8)
 
         try:
             self._doc.savefig(fig)

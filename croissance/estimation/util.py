@@ -5,9 +5,10 @@ from scipy.signal import savgol_filter
 
 
 def points_per_hour(series):
-    return 1 / numpy.median(
-        [series.index[i] - series.index[i - 1] for i in range(1, len(series))]
-    )
+    if len(series) < 2:
+        return len(series)
+
+    return 1 / numpy.median(series.index[1:] - series.index[:-1])
 
 
 def resample(series, *, factor=10, size=None):

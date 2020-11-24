@@ -4,6 +4,7 @@ import logging
 import multiprocessing
 import signal
 import sys
+import traceback
 
 from pathlib import Path
 
@@ -29,10 +30,16 @@ class EstimatorWrapper:
     def __call__(self, values):
         filepath, idx, name, curve = values
 
-        normalized_curve = normalize_time_unit(curve, self.input_time_unit)
-        annotated_curve = self.estimator.growth(normalized_curve, name)
+        try:
+            normalized_curve = normalize_time_unit(curve, self.input_time_unit)
+            annotated_curve = self.estimator.growth(normalized_curve, name)
 
-        return (filepath, idx, name, annotated_curve)
+            return (filepath, idx, name, annotated_curve)
+        except Exception:
+            log = logging.getLogger("croissance")
+            log.error("Unhandled exception while annotating %r:", name)
+            for line in traceback.format_exc().splitlines():
+                log.error("%s", line)
 
 
 def init_worker():
@@ -131,13 +138,19 @@ def main(argv):
 
     # Dont spawn more processes than tasks
     args.threads = max(1, min(args.threads, len(curves)))
+    log.info("Annotating growth curves using %i threads", args.threads)
 
-    log.info("Annotating growth curves ..")
+    return_code = 0
     annotated_curves = {filepath: [] for filepath in args.infiles}
     with multiprocessing.Pool(processes=args.threads, initializer=init_worker) as pool:
         async_calculation = pool.imap_unordered(EstimatorWrapper(args), curves)
 
-        for nth, (filepath, idx, name, curve) in enumerate(async_calculation, start=1):
+        for nth, result in enumerate(async_calculation, start=1):
+            if result is None:
+                return_code = 1
+                continue
+
+            (filepath, idx, name, curve) = result
             log.info("Annotated curve %i of %i: %s", nth, len(curves), name)
 
             annotated_curves[filepath].append((idx, name, curve))
@@ -159,6 +172,8 @@ def main(argv):
                     figwriter.write(name, annotated_curve)
 
     log.info("Done ..")
+
+    return return_code
 
 
 def entry_point():

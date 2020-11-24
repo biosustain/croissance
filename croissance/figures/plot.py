@@ -4,12 +4,7 @@ import numpy
 from croissance.estimation import AnnotatedGrowthCurve
 
 
-def plot_processed_curve(
-    curve: AnnotatedGrowthCurve,
-    name: str,
-    figsize=(16, 16),
-    include_shifted_exponentials: bool = False,
-):
+def plot_processed_curve(curve: AnnotatedGrowthCurve, name: str, figsize=(16, 16)):
     fig, axes = plt.subplots(nrows=2, ncols=1, figsize=figsize)
 
     axes[1].set_yscale("log")
@@ -51,23 +46,6 @@ def plot_processed_curve(
         phase_series = curve.series[phase.start : phase.end]
 
         for axis in axes:
-            if include_shifted_exponentials:
-                axis.plot(
-                    phase_series.index,
-                    phase_series.values - phase.n0,
-                    marker=".",
-                    linewidth=0,
-                    color="red",
-                )
-
-                axis.plot(
-                    phase_series.index,
-                    gf(phase_series.index) - phase.n0,
-                    marker=None,
-                    linewidth=2,
-                    color="red",
-                )
-
             axis.axhline(
                 y=phase.n0,
                 marker=None,

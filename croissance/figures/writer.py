@@ -7,17 +7,12 @@ from croissance.figures.plot import plot_processed_curve
 
 
 class PDFWriter:
-    def __init__(self, filepath, include_shifted_exponentials: bool = False):
+    def __init__(self, filepath):
         self._handle = open(filepath, "wb")
         self._doc = PdfPages(self._handle)
-        self._include_shifted_exponentials = include_shifted_exponentials
 
     def write(self, name: str, curve: AnnotatedGrowthCurve):
-        fig, _axes = plot_processed_curve(
-            curve=curve,
-            name=name,
-            include_shifted_exponentials=self._include_shifted_exponentials,
-        )
+        fig, _axes = plot_processed_curve(curve=curve, name=name)
 
         try:
             self._doc.savefig(fig)

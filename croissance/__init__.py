@@ -28,15 +28,7 @@ def process_curve(
     ).growth(curve)
 
 
-def plot_processed_curve(
-    curve: AnnotatedGrowthCurve,
-    name: str = None,
-    figsize=(10, 10),
-    include_shifted_exponentials: bool = False,
-):
+def plot_processed_curve(curve: AnnotatedGrowthCurve, name=None, figsize=(10, 10)):
     return croissance.figures.plot.plot_processed_curve(
-        curve=curve,
-        name=name,
-        figsize=figsize,
-        include_shifted_exponentials=include_shifted_exponentials,
+        curve=curve, name=name, figsize=figsize
     )

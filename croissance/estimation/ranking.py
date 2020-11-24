@@ -2,7 +2,11 @@ from operator import attrgetter
 
 
 def score(values, q):
-    return (q - min(values)) / (max(values) - min(values)) * 100
+    span = max(values) - min(values)
+    if not span:
+        return 100
+
+    return (q - min(values)) / span * 100
 
 
 def rank_phases(phases, weights, thresholds):

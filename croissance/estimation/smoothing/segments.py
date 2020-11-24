@@ -1,7 +1,6 @@
-from heapq import heappush, heappop
-
 import numpy
 import pandas
+
 from scipy.signal import detrend
 from scipy.interpolate import InterpolatedUnivariateSpline
 
@@ -14,37 +13,28 @@ def segment_by_std_dev(series, increment=2, maximum=20):
     """
     start = int(series.index.min())
     duration = int(series.index[-2])
-    windows = []
 
+    windows = []
     for i in range(start, duration, increment):
         for size in range(1, maximum + 1):
             window = series[i : i + size * increment]
+            # Gaps in measurements may result in empty windows
             if not window.empty:
                 window = detrend(window)
-                heappush(
-                    windows,
-                    (window.std() / (size * increment), i, i + size * increment),
+                windows.append(
+                    (window.std() / (size * increment), i, i + size * increment)
                 )
 
     segments = []
     spots = set()
+    for _window_agv_std, start, end in sorted(windows):
+        window_spots = range(start, int(end))
 
-    try:
-        while True:
-            _window_agv_std, start, end = heappop(windows)
+        if not any(i in spots for i in window_spots):
+            segments.append((start, min(duration, end)))
+            spots.update(window_spots)
 
-            if any(i in spots for i in range(start, int(end))):
-                continue
-
-            for i in range(start, int(end)):
-                spots.add(int(i))
-
-            heappush(segments, (start, min(duration, end)))
-
-    except IndexError:
-        pass
-
-    return [heappop(segments) for _ in range(len(segments))]
+    return sorted(segments)
 
 
 def window_median(window, start, end):

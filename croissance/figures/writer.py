@@ -13,8 +13,9 @@ class PDFWriter:
         self._yscale = yscale
 
     def write(self, name: str, curve: AnnotatedGrowthCurve):
-        fig, _axes = plot_processed_curve(curve=curve, name=name, yscale=self._yscale)
+        fig, _axes = plot_processed_curve(curve=curve, yscale=self._yscale)
 
+        fig.suptitle(name)
         fig.set_figwidth(16)
         fig.set_figheight(16 if self._yscale == "both" else 8)
 

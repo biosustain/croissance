@@ -28,7 +28,5 @@ def process_curve(
     ).growth(curve)
 
 
-def plot_processed_curve(curve: AnnotatedGrowthCurve, name=None, figsize=(10, 10)):
-    return croissance.figures.plot.plot_processed_curve(
-        curve=curve, name=name, figsize=figsize
-    )
+def plot_processed_curve(curve: AnnotatedGrowthCurve, yscale="both"):
+    return croissance.figures.plot.plot_processed_curve(curve=curve, yscale=yscale)

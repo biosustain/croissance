@@ -4,10 +4,8 @@ import numpy
 from croissance.estimation import AnnotatedGrowthCurve
 
 
-def plot_processed_curve(curve: AnnotatedGrowthCurve, name: str, yscale="log"):
+def plot_processed_curve(curve: AnnotatedGrowthCurve, yscale="log"):
     fig, axes = plt.subplots(nrows=2 if yscale == "both" else 1, ncols=1)
-    fig.suptitle(name)
-
     if curve.series.max() <= 0:
         return
 

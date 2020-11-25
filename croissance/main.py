@@ -10,7 +10,7 @@ from pathlib import Path
 
 import coloredlogs
 
-from croissance import Estimator
+from croissance import estimate_growth
 from croissance.estimation.util import normalize_time_unit
 from croissance.figures.writer import PDFWriter
 from croissance.formats.input import TSVReader
@@ -19,11 +19,9 @@ from croissance.formats.output import TSVWriter
 
 class EstimatorWrapper:
     def __init__(self, args):
-        self.estimator = Estimator(
-            constrain_n0=args.constrain_N0,
-            segment_log_n0=args.segment_log_N0,
-            n0=args.N0,
-        )
+        self.constrain_n0 = args.constrain_N0
+        self.segment_log_n0 = args.segment_log_N0
+        self.n0 = args.N0
 
         self.input_time_unit = args.input_time_unit
 
@@ -32,7 +30,13 @@ class EstimatorWrapper:
 
         try:
             normalized_curve = normalize_time_unit(curve, self.input_time_unit)
-            annotated_curve = self.estimator.growth(normalized_curve, name)
+            annotated_curve = estimate_growth(
+                normalized_curve,
+                segment_log_n0=self.segment_log_n0,
+                constrain_n0=self.constrain_n0,
+                n0=self.n0,
+                name=name,
+            )
 
             return (filepath, idx, name, annotated_curve)
         except Exception:

@@ -79,10 +79,15 @@ def segment_points(series, segments):
     return pandas.Series(index=index, data=data)
 
 
-def segment_spline_smoothing(series, series_std_dev=None):
+def segment_spline_smoothing(series, series_std_dev=None, k=3):
     if series_std_dev is None:
         series_std_dev = series
+
     segments = segment_by_std_dev(series_std_dev)
     points = segment_points(series, segments).sort_index()
-    spline = InterpolatedUnivariateSpline(points.index, points.values, k=3)
+    if len(points) < k + 1:
+        # InterpolatedUnivariateSpline requires at k + 1 points
+        return pandas.Series(dtype="float64")
+
+    spline = InterpolatedUnivariateSpline(points.index, points.values, k=k)
     return pandas.Series(data=spline(series.index), index=series.index)

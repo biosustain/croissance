@@ -58,44 +58,44 @@ def parse_args(argv):
     )
 
     parser.add_argument("infiles", type=Path, nargs="+")
-    parser.add_argument("--input-format", type=str.lower, choices=("tsv",))
+
     parser.add_argument(
+        "--threads",
+        type=int,
+        default=1,
+        help="Max number of threads to use during growth estimation",
+    )
+
+    group = parser.add_argument_group("Input")
+    group.add_argument("--input-format", type=str.lower, choices=("tsv",))
+    group.add_argument(
         "--input-time-unit",
         default="hours",
         choices=("hours", "minutes"),
         help="Time unit in time column",
     )
-    parser.add_argument(
-        "--N0",
-        type=float,
-        default=0.0,
-        help="Baseline for constrained regressions and identifying curve segments in "
-        "log space",
+
+    group = parser.add_argument_group("Output")
+    group.add_argument("--output-format", type=str.lower, choices=("tsv",))
+    group.add_argument(
+        "--output-suffix",
+        type=str,
+        default=".output",
+        help="Suffix used for output files in addition to the file extension. By "
+        "default, an input file `file.tsv` will result in output files named `file. "
+        "output.tsv` and `file.output.pdf`",
     )
-    parser.add_argument(
-        "--constrain-N0",
-        action="store_true",
-        help="All growth phases will begin at N0 when this flag is set",
-    )
-    parser.add_argument(
-        "--segment-log-N0",
-        action="store_true",
-        help="Identify curve segments using log(N-N0) rather than N; increases "
-        "sensitivity to changes in exponential growth but has to assume a certain N0",
-    )
-    parser.add_argument("--output-format", type=str.lower, choices=("tsv",))
-    parser.add_argument("--output-suffix", type=str, default=".output")
-    parser.add_argument(
+    group.add_argument(
         "--output-exclude-default-phase",
         action="store_true",
         help="Do not output phase '0' for each curve",
     )
-    parser.add_argument(
+    group.add_argument(
         "--figures",
         action="store_true",
         help="Renders a PDF file with figures for each curve",
     )
-    parser.add_argument(
+    group.add_argument(
         "--figures-yscale",
         type=str.lower,
         default="both",
@@ -103,11 +103,24 @@ def parse_args(argv):
         help="Yscale(s) for figures. If both, then two plots are generated per curve",
     )
 
-    parser.add_argument(
-        "--threads",
-        type=int,
-        default=1,
-        help="Max number of threads to use during growth estimation",
+    group = parser.add_argument_group("Growth model")
+    group.add_argument(
+        "--N0",
+        type=float,
+        default=0.0,
+        help="Baseline for constrained regressions and identifying curve segments in "
+        "log space",
+    )
+    group.add_argument(
+        "--constrain-N0",
+        action="store_true",
+        help="All growth phases will begin at N0 when this flag is set",
+    )
+    group.add_argument(
+        "--segment-log-N0",
+        action="store_true",
+        help="Identify curve segments using log(N-N0) rather than N; increases "
+        "sensitivity to changes in exponential growth but has to assume a certain N0",
     )
 
     group = parser.add_argument_group("Logging")

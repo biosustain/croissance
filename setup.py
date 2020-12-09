@@ -13,20 +13,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import unicode_literals
-import codecs
-
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="croissance",
     version="1.1.1",
-    packages=find_packages(exclude=["*tests*"]),
+    packages=["croissance"],
     url="https://github.com/biosustain/croissance",
     author="Lars Schöning",
     author_email="lays@biosustain.dtu.dk",
     description="A tool for estimating growth rates in growth curves.",
-    long_description=codecs.open("README.rst", encoding="utf-8").read(),
+    long_description=open("README.rst", encoding="utf-8").read(),
     license="Apache License Version 2.0",
     entry_points={
         "console_scripts": [

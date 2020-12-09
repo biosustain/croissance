@@ -6,8 +6,6 @@ from operator import attrgetter
 import numpy
 import pandas
 
-import croissance.estimation.defaults as defaults
-
 from croissance.estimation.outliers import remove_outliers
 from croissance.estimation.ranking import rank_phases
 from croissance.estimation.regression import fit_exponential
@@ -48,19 +46,51 @@ AnnotatedGrowthCurve = namedtuple(
 )
 
 
+class GrowthEstimationParameters:
+    __slots__ = [
+        "segment_log_n0",
+        "constrain_n0",
+        "n0",
+        "curve_minimum_duration_hours",
+        "phase_minimum_signal_noise_ratio",
+        "phase_minimum_duration_hours",
+        "phase_minimum_slope",
+        "phase_rank_exclude_below",
+        "phase_rank_weights",
+    ]
+
+    def __init__(self):
+        self.segment_log_n0 = False
+        self.constrain_n0 = False
+        self.n0 = 0.0
+
+        self.curve_minimum_duration_hours = 5
+        self.phase_minimum_signal_noise_ratio = 1.0
+        self.phase_minimum_duration_hours = 1.5
+        self.phase_minimum_slope = 0.005
+
+        self.phase_rank_exclude_below = 33
+        self.phase_rank_weights = {
+            "SNR": 50,
+            "duration": 30,
+            "slope": 10,
+            # TODO add 1 - start?
+        }
+
+
 def estimate_growth(
     curve: pandas.Series,
     *,
-    segment_log_n0: bool = False,
-    constrain_n0: bool = False,
-    n0: float = 0.0,
+    params=GrowthEstimationParameters(),
     name: str = "untitled curve"
 ) -> AnnotatedGrowthCurve:
     log = logging.getLogger(__name__)
     series = curve.dropna()
 
     n_hours = int(
-        numpy.round(points_per_hour(series) * defaults.CURVE_MINIMUM_DURATION_HOURS)
+        numpy.round(
+            points_per_hour(series) * max(1, params.curve_minimum_duration_hours)
+        )
     )
 
     if n_hours == 0:
@@ -81,8 +111,8 @@ def estimate_growth(
         log.warning("Fewer than three positive data-points for %s", name)
         return AnnotatedGrowthCurve(series, outliers, [])
 
-    if segment_log_n0:
-        series_log_n0 = numpy.log(series - n0).dropna()
+    if params.segment_log_n0:
+        series_log_n0 = numpy.log(series - params.n0).dropna()
         smooth_series = segment_spline_smoothing(series, series_log_n0)
     else:
         smooth_series = segment_spline_smoothing(series)
@@ -100,19 +130,19 @@ def estimate_growth(
             continue
 
         # skip any phases with less than minimum duration
-        if phase.duration < defaults.PHASE_MINIMUM_DURATION_HOURS:
+        if phase.duration < max(0.0, params.phase_minimum_duration_hours):
             continue
 
         slope, intercept, n0, snr, _fallback_linear_method = fit_exponential(
-            phase_series, n0=n0 if constrain_n0 else None
+            phase_series, n0=params.n0 if params.constrain_n0 else None
         )
 
         # skip phases whose actual slope is below the limit
-        if slope < max(0.0, defaults.PHASE_MINIMUM_SLOPE):
+        if slope < max(0.0, params.phase_minimum_slope):
             continue
 
         # skip phases whose actual signal-noise-ratio is below the limit
-        if snr < max(1.0, defaults.PHASE_MINIMUM_SIGNAL_NOISE_RATIO):
+        if snr < max(1.0, params.phase_minimum_signal_noise_ratio):
             continue
 
         phases.append(
@@ -129,11 +159,11 @@ def estimate_growth(
 
     ranked_phases = rank_phases(
         phases,
-        defaults.PHASE_RANK_WEIGHTS,
+        params.phase_rank_weights,
         thresholds={
-            "SNR": defaults.PHASE_MINIMUM_SIGNAL_NOISE_RATIO,
-            "duration": defaults.PHASE_MINIMUM_DURATION_HOURS,
-            "slope": defaults.PHASE_MINIMUM_SLOPE,
+            "duration": max(0.0, params.phase_minimum_duration_hours),
+            "slope": max(0.0, params.phase_minimum_slope),
+            "SNR": max(1.0, params.phase_minimum_signal_noise_ratio),
         },
     )
 
@@ -143,7 +173,7 @@ def estimate_growth(
         [
             phase
             for phase in ranked_phases
-            if phase.rank >= defaults.PHASE_RANK_EXCLUDE_BELOW
+            if phase.rank >= params.phase_rank_exclude_below
         ],
     )
 

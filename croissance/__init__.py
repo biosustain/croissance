@@ -2,7 +2,11 @@ import pandas
 
 import croissance.figures.plot
 
-from croissance.estimation import AnnotatedGrowthCurve, estimate_growth
+from croissance.estimation import (
+    AnnotatedGrowthCurve,
+    GrowthEstimationParameters,
+    estimate_growth,
+)
 from croissance.estimation.util import normalize_time_unit
 
 
@@ -23,12 +27,12 @@ def process_curve(
     if curve.isnull().all():
         return AnnotatedGrowthCurve(curve, [], [])
 
-    return estimate_growth(
-        curve,
-        segment_log_n0=segment_log_n0,
-        constrain_n0=constrain_n0,
-        n0=n0,
-    )
+    params = GrowthEstimationParameters()
+    params.segment_log_n0 = segment_log_n0
+    params.constrain_n0 = constrain_n0
+    params.n0 = n0
+
+    return estimate_growth(curve, params=params)
 
 
 def plot_processed_curve(curve: AnnotatedGrowthCurve, yscale="both"):

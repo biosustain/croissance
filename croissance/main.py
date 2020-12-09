@@ -10,7 +10,7 @@ from pathlib import Path
 
 import coloredlogs
 
-from croissance import estimate_growth
+from croissance import GrowthEstimationParameters, estimate_growth
 from croissance.estimation.util import normalize_time_unit
 from croissance.figures.writer import PDFWriter
 from croissance.formats.input import TSVReader
@@ -19,9 +19,17 @@ from croissance.formats.output import TSVWriter
 
 class EstimatorWrapper:
     def __init__(self, args):
-        self.constrain_n0 = args.constrain_N0
-        self.segment_log_n0 = args.segment_log_N0
-        self.n0 = args.N0
+        self.params = GrowthEstimationParameters()
+
+        self.params.constrain_n0 = args.constrain_N0
+        self.params.segment_log_n0 = args.segment_log_N0
+        self.params.n0 = args.N0
+
+        self.params.phase_minimum_signal_noise_ratio = (
+            args.phase_minimum_signal_to_noise
+        )
+        self.params.phase_minimum_duration_hours = args.phase_minimum_duration
+        self.params.phase_minimum_slope = args.phase_minimum_slope
 
         self.input_time_unit = args.input_time_unit
 
@@ -32,9 +40,7 @@ class EstimatorWrapper:
             normalized_curve = normalize_time_unit(curve, self.input_time_unit)
             annotated_curve = estimate_growth(
                 normalized_curve,
-                segment_log_n0=self.segment_log_n0,
-                constrain_n0=self.constrain_n0,
-                n0=self.n0,
+                params=self.params,
                 name=name,
             )
 
@@ -103,11 +109,12 @@ def parse_args(argv):
         help="Yscale(s) for figures. If both, then two plots are generated per curve",
     )
 
+    defaults = GrowthEstimationParameters()
     group = parser.add_argument_group("Growth model")
     group.add_argument(
         "--N0",
         type=float,
-        default=0.0,
+        default=defaults.n0,
         help="Baseline for constrained regressions and identifying curve segments in "
         "log space",
     )
@@ -121,6 +128,27 @@ def parse_args(argv):
         action="store_true",
         help="Identify curve segments using log(N-N0) rather than N; increases "
         "sensitivity to changes in exponential growth but has to assume a certain N0",
+    )
+    group.add_argument(
+        "--phase-minimum-signal-to-noise",
+        type=float,
+        metavar="SNR",
+        default=defaults.phase_minimum_signal_noise_ratio,
+        help="Minimum phase signal-to-noise ratio",
+    )
+    group.add_argument(
+        "--phase-minimum-duration",
+        type=float,
+        metavar="HOURS",
+        default=defaults.phase_minimum_duration_hours,
+        help="Minimum duration of phases in hours",
+    )
+    group.add_argument(
+        "--phase-minimum-slope",
+        type=float,
+        metavar="SLOPE",
+        default=defaults.phase_minimum_slope,
+        help="Minimum phase slope",
     )
 
     group = parser.add_argument_group("Logging")

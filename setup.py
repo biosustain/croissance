@@ -17,7 +17,7 @@ from setuptools import setup
 
 setup(
     name="croissance",
-    version="1.1.1",
+    version="1.2.0",
     packages=["croissance"],
     url="https://github.com/biosustain/croissance",
     author="Lars Schöning",

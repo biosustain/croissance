@@ -13,12 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="croissance",
     version="1.2.0",
-    packages=["croissance"],
+    packages=find_packages(where="croissance", exclude=["tests"]),
+    package_dir={"": "croissance"},
     url="https://github.com/biosustain/croissance",
     author="Lars Schöning",
     author_email="lays@biosustain.dtu.dk",

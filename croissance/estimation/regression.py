@@ -9,14 +9,15 @@ def exponential(x, a, b, c):
 
 def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
     """
-    Fits an exponential to a series. First attempts an exponential fit in linear space using p0, then falls back to a
-    fit in log space to attempt to find parameters p0 for a linear fit; if all else fails returns the linear fit.
-
+    Fits an exponential to a series. First attempts an exponential fit in linear space
+    using p0, then falls back to a fit in log space to attempt to find parameters p0
+    for a linear fit; if all else fails returns the linear fit.
     """
 
     if n0 is None:
         fit_fn = exponential
     else:
+
         def exponential_constrain_n0(x, a, b):
             return a * numpy.exp(b * x) + n0
 
@@ -24,12 +25,16 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = p0[:2]
 
     try:
-        popt, pcov = curve_fit(fit_fn,
-                               series.index,
-                               series.values,
-                               p0=p0,
-                               maxfev=10000,
-                               bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
+        popt, _pcov = curve_fit(
+            fit_fn,
+            series.index,
+            series.values,
+            p0=p0,
+            maxfev=10000,
+            bounds=([0.0, 0.0, 0.0], numpy.inf)
+            if n0 is None
+            else ([0.0, 0.0], numpy.inf),
+        )
 
         if n0 is not None:
             popt = tuple(popt) + (n0,)
@@ -47,7 +52,7 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
     log_series = numpy.log(series[series > 0] - (n0 or 0.0))
 
     slope, c, *__ = linregress(log_series.index, log_series.values)
-    intercept = - c / slope
+    intercept = -c / slope
 
     if n0 is None:
         p0 = (numpy.exp(c), slope, 0.0)
@@ -55,12 +60,16 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
         p0 = (numpy.exp(c), slope)
 
     try:
-        popt, pcov = curve_fit(fit_fn,
-                               series.index,
-                               series.values,
-                               p0=p0,
-                               maxfev=10000,
-                               bounds=([0., 0., 0.], numpy.inf) if n0 is None else ([0., 0.], numpy.inf))
+        popt, _pcov = curve_fit(
+            fit_fn,
+            series.index,
+            series.values,
+            p0=p0,
+            maxfev=10000,
+            bounds=([0.0, 0.0, 0.0], numpy.inf)
+            if n0 is None
+            else ([0.0, 0.0], numpy.inf),
+        )
 
         if n0 is not None:
             popt = tuple(popt) + (n0,)

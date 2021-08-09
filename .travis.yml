@@ -2,11 +2,12 @@ language: python
 cache:
   - pip: true
 python:
-  - "3.5"
+  - "3.6"
 before_install:
-  - | 
+  - |
     mkdir -p $HOME/.config/matplotlib && \
     echo 'backend: agg' > $HOME/.config/matplotlib/matplotlibrc
 install:
-  - "pip install ."
-script: python setup.py test
+  - pip install .
+  - pip install pytest
+script: pytest tests

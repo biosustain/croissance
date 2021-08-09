@@ -1,16 +1,18 @@
 import pandas
 
 
-class TSVReader(object):
+class TSVReader:
+    def __init__(self, filepath):
+        self._filepath = filepath
 
-    def read(self, file):
-        data = pandas.read_csv(file,
-                               sep="\t",
-                               header=0,
-                               index_col=0)
+    def read(self):
+        with open(self._filepath, "rt") as handle:
+            data = pandas.read_csv(handle, sep="\t", header=0, index_col=0)
 
-        names = data.columns
+        return [(name, data[name].dropna()) for name in data.columns]
 
-        for name in names:
-            curve = data[name].dropna()
-            yield name, curve
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        pass

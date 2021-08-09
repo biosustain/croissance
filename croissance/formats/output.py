@@ -3,29 +3,43 @@ import csv
 from croissance.estimation import GrowthPhase, AnnotatedGrowthCurve
 
 
-class TSVWriter(object):
-    def __init__(self, file, include_default_phase: bool = True):
-        writer = csv.writer(file, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['name', 'phase', 'slope', 'intercept', 'N0', 'SNR', 'rank'])
+class TSVWriter:
+    def __init__(self, filepath, exclude_default_phase: bool = True):
+        self._exclude_default_phase = exclude_default_phase
+        self._handle = open(filepath, "wt")
+        self._writer = csv.writer(
+            self._handle, delimiter="\t", quoting=csv.QUOTE_MINIMAL
+        )
 
-        self._writer = writer
-        self._file = file
-        self._include_default_phase = include_default_phase
+        self._writer.writerow(
+            ["name", "phase", "start", "end", "slope", "intercept", "N0", "SNR", "rank"]
+        )
 
-    def write(self,
-              name: str,
-              curve: AnnotatedGrowthCurve):
+    def write(self, name: str, curve: AnnotatedGrowthCurve):
+        if not self._exclude_default_phase:
+            phase = GrowthPhase.pick_best(curve.growth_phases, "rank")
+            if phase is None:
+                phase = GrowthPhase(None, None, None, None, None, None, None)
 
-        if self._include_default_phase:
-            phase = GrowthPhase.pick_best(curve.growth_phases, 'rank')
+            self._write_phase(name, 0, phase)
 
-            if not phase:
-                self._writer.writerow([name, 0, None, None, None])
-            else:
-                self._writer.writerow([name, 0, phase.slope, phase.intercept, phase.n0, phase.SNR, phase.rank])
+        for idx, phase in enumerate(curve.growth_phases, start=1):
+            self._write_phase(name, idx, phase)
 
-        for i, phase in enumerate(curve.growth_phases, start=1):
-            self._writer.writerow([name, i, phase.slope, phase.intercept, phase.n0, phase.SNR, phase.rank])
+    def _write_phase(self, name, idx, phase):
+        self._writer.writerow(
+            [
+                name,
+                idx,
+                phase.start,
+                phase.end,
+                phase.slope,
+                phase.intercept,
+                phase.n0,
+                phase.SNR,
+                phase.rank,
+            ]
+        )
 
     def __enter__(self):
         return self
@@ -34,4 +48,4 @@ class TSVWriter(object):
         self.close()
 
     def close(self):
-        self._file.close()
+        self._handle.close()

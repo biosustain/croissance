@@ -202,7 +202,7 @@ def main(argv):
                 return_code = 1
                 continue
 
-            (filepath, idx, name, curve) = result
+            filepath, idx, name, curve = result
             log.info("Annotated curve %i of %i: %s", nth, len(curves), name)
 
             annotated_curves[filepath].append((idx, name, curve))

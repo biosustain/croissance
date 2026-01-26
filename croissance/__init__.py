@@ -9,7 +9,6 @@ from croissance.estimation import (
 )
 from croissance.estimation.util import normalize_time_unit
 
-
 __all__ = [
     "plot_processed_curve",
     "process_curve",

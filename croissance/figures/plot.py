@@ -53,7 +53,7 @@ def _do_plot_processed_curve(curve, axis, yscale):
 
         a = 1 / numpy.exp(phase.intercept * phase.slope)
 
-        def gf(x):
+        def gf(x, phase=phase, a=a):
             return a * numpy.exp(phase.slope * x) + phase.n0
 
         phase_series = curve.series[phase.start : phase.end]

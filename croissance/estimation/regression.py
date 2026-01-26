@@ -31,9 +31,9 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
             series.values,
             p0=p0,
             maxfev=10000,
-            bounds=([0.0, 0.0, 0.0], numpy.inf)
-            if n0 is None
-            else ([0.0, 0.0], numpy.inf),
+            bounds=(
+                ([0.0, 0.0, 0.0], numpy.inf) if n0 is None else ([0.0, 0.0], numpy.inf)
+            ),
         )
 
         if n0 is not None:
@@ -66,9 +66,9 @@ def fit_exponential(series, *, p0=(1.0, 0.01, 0.0), n0: float = None):
             series.values,
             p0=p0,
             maxfev=10000,
-            bounds=([0.0, 0.0, 0.0], numpy.inf)
-            if n0 is None
-            else ([0.0, 0.0], numpy.inf),
+            bounds=(
+                ([0.0, 0.0, 0.0], numpy.inf) if n0 is None else ([0.0, 0.0], numpy.inf)
+            ),
         )
 
         if n0 is not None:

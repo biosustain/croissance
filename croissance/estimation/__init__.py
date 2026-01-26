@@ -82,7 +82,7 @@ def estimate_growth(
     curve: pandas.Series,
     *,
     params=GrowthEstimationParameters(),
-    name: str = "untitled curve"
+    name: str = "untitled curve",
 ) -> AnnotatedGrowthCurve:
     log = logging.getLogger(__name__)
     series = curve.dropna()

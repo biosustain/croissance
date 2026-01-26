@@ -76,7 +76,9 @@ class GrowthEstimationParameters:
             # TODO add 1 - start?
         }
 
+
 growth_estimation_defaults = GrowthEstimationParameters()
+
 
 def estimate_growth(
     curve: pandas.Series,

@@ -1,0 +1,90 @@
+# ref: https://setuptools.pypa.io/en/stable/userguide/pyproject_config.html
+[project]
+authors = [{ name = "Lars Schöning", email = "lays@biosustain.dtu.dk" },
+           { name = "Henry Webel", email = "heweb@dtu.dk" },
+           { name = "Emre Ozdemir", email = "emoz@dtu.dk" }]
+
+description = "A tool for estimating growth rates in growth curves."
+name = "croissance"
+# This means: Load the version from the package itself.
+# See the section below: [tools.setuptools.dynamic]
+dynamic = [
+  "version", # version is loaded from the package
+  #"dependencies", # add if using requirements.txt
+]
+readme = "README.rst"
+requires-python = ">=3.9" # test all higher Python versions
+# These are keywords
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Topic :: Utilities",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+]
+# Also update LICENSE file if you pick another one
+# license = {file = "LICENSE"} # SPDX: Apache-2.0
+license = "Apache-2.0"
+# # add dependencies here: (use one of the two)
+dependencies = [
+  "coloredlogs>=14.0.0",
+  "matplotlib>=1.4.3",
+  "numpy>=1.9.1",
+  "pandas>=0.18.0",
+  "scipy>=0.14.0",
+]
+# use requirements.txt instead of pyproject.toml for dependencies
+# https://stackoverflow.com/a/73600610/9684872
+# ! uncomment also dependencies in the dynamic section above
+# [tool.setuptools.dynamic]
+# dependencies = {file = ["requirements.txt"]}
+
+
+[project.urls]
+"Bug Tracker" = "https://github.com/biosustain/croissance/issues"
+"Homepage" = "https://github.com/biosustain/croissance"
+
+[project.optional-dependencies]
+# Optional dependencies to locally build the documentation, also used for 
+# readthedocs.
+docs = [
+  "sphinx",
+  "sphinx-book-theme",
+  "myst-nb",
+  "ipywidgets",
+  "sphinx-new-tab-link!=0.2.2",
+  "jupytext",
+  "sphinx-copybutton",
+]
+# local development options
+dev = ["black[jupyter]", "ruff", "pytest", "isort", "jupytext"]
+
+[tool.ruff]
+# https://docs.astral.sh/ruff/rules/#flake8-bandit-s
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/tutorial/#rule-selection
+# 1. Enable flake8-bugbear (`B`) rules
+# 2. Enable pycodestyle (`E`) errors and (`W`) warnings
+# 3. Pyflakes (`F`) errors
+extend-select = ["E", "W", "F", "B"]
+# Ignore line length errors:
+# ignore = ["E501"]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+
+[tool.setuptools_scm]
+# https://setuptools-scm.readthedocs.io/ 
+# used to pick up the version from the git tags or the latest commit.
+
+[tool.isort]
+profile = "black"
+
+# Script entry points, i.e. command line commands available after installing the package
+# e.g. implemented using argparse
+# Then you can type: `croissance -h` in the terminal
+[project.scripts]
+croissance = "croissance.main:entry_point"
+

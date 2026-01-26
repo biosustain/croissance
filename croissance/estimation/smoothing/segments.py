@@ -1,8 +1,7 @@
 import numpy
 import pandas
-
-from scipy.signal import detrend
 from scipy.interpolate import InterpolatedUnivariateSpline
+from scipy.signal import detrend
 
 
 def segment_by_std_dev(series, increment=2, maximum=20):

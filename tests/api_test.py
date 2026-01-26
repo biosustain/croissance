@@ -4,11 +4,9 @@ import matplotlib.pyplot as plt
 import numpy
 import pandas
 import pytest
-
-
 from pytest import approx
 
-from croissance import process_curve, plot_processed_curve
+from croissance import plot_processed_curve, process_curve
 from croissance.figures.writer import PDFWriter
 
 

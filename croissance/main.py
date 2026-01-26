@@ -5,7 +5,6 @@ import multiprocessing
 import signal
 import sys
 import traceback
-
 from pathlib import Path
 
 import coloredlogs

@@ -1,7 +1,6 @@
 import pandas
 
 import croissance.figures.plot
-
 from croissance.estimation import (
     AnnotatedGrowthCurve,
     GrowthEstimationParameters,

@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from matplotlib.backends.backend_pdf import PdfPages
 
 from croissance.estimation import AnnotatedGrowthCurve

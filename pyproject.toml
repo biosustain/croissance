@@ -6,10 +6,10 @@ authors = [{ name = "Lars Schöning", email = "lays@biosustain.dtu.dk" },
 
 description = "A tool for estimating growth rates in growth curves."
 name = "croissance"
-# This means: Load the version from the package itself.
-# See the section below: [tools.setuptools.dynamic]
+# This means: the version is provided dynamically (not hard-coded here).
+# See the section below: [tool.setuptools_scm]
 dynamic = [
-  "version", # version is loaded from the package
+  "version", # version is managed by setuptools_scm
   #"dependencies", # add if using requirements.txt
 ]
 readme = "README.rst"
@@ -20,7 +20,7 @@ classifiers = [
   "Topic :: Utilities",
   "Intended Audience :: Science/Research",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.9",
 ]
 # Also update LICENSE file if you pick another one
 # license = {file = "LICENSE"} # SPDX: Apache-2.0

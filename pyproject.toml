@@ -30,7 +30,7 @@ dependencies = [
   "coloredlogs>=14.0.0",
   "matplotlib>=1.4.3",
   "numpy>=1.9.1",
-  "pandas>=0.18.0",
+  "pandas>=0.18.0,<3.0.0",
   "scipy>=0.14.0",
 ]
 # use requirements.txt instead of pyproject.toml for dependencies

@@ -46,6 +46,22 @@ def test_process_curve_time_unit():
     assert hours.growth_phases == minutes.growth_phases
 
 
+def test_PDFWriter_basic():
+    with PDFWriter(Path("test.basic.pdf")) as doc:
+        mu = 0.5
+        pph = 4.0
+        curve = pandas.Series(
+            data=[numpy.exp(mu * i / pph) for i in range(100)],
+            index=[i / pph for i in range(100)],
+        )
+
+        result = process_curve(curve, constrain_n0=True, n0=0.0)
+
+        # self.assertAlmostEqual(mu, slope, 6, msg="growth rate (mu)={}".format(mu))
+
+        doc.write("#0 n0=1", result)
+
+
 def test_process_curve_basic0():
     # with PDFWriter(Path("test.basic.pdf")) as doc:
     mu = 0.5

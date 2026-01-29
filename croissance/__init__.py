@@ -1,3 +1,5 @@
+from importlib import metadata
+
 import pandas
 
 import croissance.figures.plot
@@ -12,6 +14,9 @@ __all__ = [
     "plot_processed_curve",
     "process_curve",
 ]
+
+
+__version__ = metadata.version("croissance")
 
 
 def process_curve(

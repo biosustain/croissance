@@ -54,7 +54,7 @@ To also output a PDF files with figures (`example.output.pdf`), enter:
 croissance --figures example.tsv
 ```
 
-[![Example figure](https://cloud.githubusercontent.com/assets/74085/21225960/abfa9a4a-c2d3-11e6-85c6-88b1db24723c.png)](#)
+![Example figure](https://cloud.githubusercontent.com/assets/74085/21225960/abfa9a4a-c2d3-11e6-85c6-88b1db24723c.png)]
 
 ---
 

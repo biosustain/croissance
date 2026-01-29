@@ -12,7 +12,7 @@ from croissance import plot_processed_curve, process_curve
 
 croissance.__version__
 
-yscale = "both" # 'linear', 'log', 'both'
+yscale = "both"  # 'linear', 'log', 'both'
 
 # %%
 mu = 0.5

@@ -41,3 +41,61 @@ nosetests.xml
 
 # Test output
 test.*.pdf
+
+
+# find more examples here:
+# https://github.com/github/gitignore/blob/main/Python.gitignore
+# Binaries (object files) produced by a compiler
+*.so
+*.o
+
+# Python/Jupyter uses these cache directories
+__pycache__
+.ipynb_checkpoints
+
+# Produced when measuring code coverage
+.coverage
+
+# These files are produced during the Python build process
+build/
+.eggs
+dist/
+**.egg-info
+
+# Sphinx documenter creates these
+_build
+_static
+_templates
+/docs/reference
+/docs/jupyter_execute
+
+# MacOS automatically creates these files
+.DS_Store
+
+# VSCode may create a config file with this name
+**.vscode
+
+# Ruff stuff:
+.ruff_cache/
+
+# Environments
+.env
+.envrc
+.venv
+env/
+venv/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/

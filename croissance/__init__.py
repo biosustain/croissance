@@ -1,14 +1,12 @@
 import pandas
 
 import croissance.figures.plot
-
 from croissance.estimation import (
     AnnotatedGrowthCurve,
     GrowthEstimationParameters,
     estimate_growth,
 )
 from croissance.estimation.util import normalize_time_unit
-
 
 __all__ = [
     "plot_processed_curve",

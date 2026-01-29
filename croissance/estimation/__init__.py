@@ -1,5 +1,4 @@
 import logging
-
 from collections import namedtuple
 from operator import attrgetter
 
@@ -10,7 +9,7 @@ from croissance.estimation.outliers import remove_outliers
 from croissance.estimation.ranking import rank_phases
 from croissance.estimation.regression import fit_exponential
 from croissance.estimation.smoothing.segments import segment_spline_smoothing
-from croissance.estimation.util import savitzky_golay, points_per_hour
+from croissance.estimation.util import points_per_hour, savitzky_golay
 
 
 class RawGrowthPhase(namedtuple("RawGrowthPhase", ("start", "end"))):
@@ -78,11 +77,14 @@ class GrowthEstimationParameters:
         }
 
 
+growth_estimation_defaults = GrowthEstimationParameters()
+
+
 def estimate_growth(
     curve: pandas.Series,
     *,
-    params=GrowthEstimationParameters(),
-    name: str = "untitled curve"
+    params=growth_estimation_defaults,
+    name: str = "untitled curve",
 ) -> AnnotatedGrowthCurve:
     log = logging.getLogger(__name__)
     series = curve.dropna()

@@ -1,6 +1,6 @@
 import csv
 
-from croissance.estimation import GrowthPhase, AnnotatedGrowthCurve
+from croissance.estimation import AnnotatedGrowthCurve, GrowthPhase
 
 
 class TSVWriter:

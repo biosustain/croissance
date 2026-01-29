@@ -4,11 +4,9 @@ import matplotlib.pyplot as plt
 import numpy
 import pandas
 import pytest
-
-
 from pytest import approx
 
-from croissance import process_curve, plot_processed_curve
+from croissance import plot_processed_curve, process_curve
 from croissance.figures.writer import PDFWriter
 
 
@@ -48,7 +46,7 @@ def test_process_curve_time_unit():
     assert hours.growth_phases == minutes.growth_phases
 
 
-def test_process_curve_basic():
+def test_PDFWriter_basic():
     with PDFWriter(Path("test.basic.pdf")) as doc:
         mu = 0.5
         pph = 4.0
@@ -59,72 +57,98 @@ def test_process_curve_basic():
 
         result = process_curve(curve, constrain_n0=True, n0=0.0)
 
-        # self.assertAlmostEqual(mu, slope, 6, msg='growth rate (mu)={}'.format(mu))
+        # self.assertAlmostEqual(mu, slope, 6, msg="growth rate (mu)={}".format(mu))
 
         doc.write("#0 n0=1", result)
-        print(result.growth_phases)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
-        assert 0.0 == approx(result.growth_phases[0].n0, 1e-3)
-        assert result.growth_phases[0].SNR > 1000
 
-        result = process_curve(curve, constrain_n0=False)
-        doc.write("#0 n0=auto", result)
-        print(result.growth_phases)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
-        assert -0.25 < result.growth_phases[0].n0 < 0.25
-        assert result.growth_phases[0].SNR > 1000
 
-        curve = pandas.Series(
-            data=(
-                [1.0] * 5
-                + [numpy.exp(mu * i / pph) for i in range(25)]
-                + [numpy.exp(mu * 24 / pph)] * 20
-            ),
-            index=([i / pph for i in range(50)]),
-        )
+def test_process_curve_basic0():
+    # with PDFWriter(Path("test.basic.pdf")) as doc:
+    mu = 0.5
+    pph = 4.0
+    curve = pandas.Series(
+        data=[numpy.exp(mu * i / pph) for i in range(100)],
+        index=[i / pph for i in range(100)],
+    )
 
-        result = process_curve(curve, constrain_n0=True, n0=0.0)
-        doc.write("#1 n0=0", result)
-        print(result.growth_phases)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
-        assert 0.0 == approx(result.growth_phases[0].n0, 1e-3)
-        assert result.growth_phases[0].SNR > 1000
+    result = process_curve(curve, constrain_n0=True, n0=0.0)
 
-        result = process_curve(curve, constrain_n0=False)
-        doc.write("#1 n0=auto", result)
-        print(result.growth_phases)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-1)
-        assert -0.25 < result.growth_phases[0].n0 < 0.25
-        assert result.growth_phases[0].SNR > 1000
+    # self.assertAlmostEqual(mu, slope, 6, msg="growth rate (mu)={}".format(mu))
 
-        mu = 0.20
-        curve = pandas.Series(
-            data=(
-                [i / 10.0 for i in range(10)]
-                + [numpy.exp(mu * i / pph) for i in range(25)]
-                + [numpy.exp(mu * 24 / pph)] * 15
-            ),
-            index=([i / pph for i in range(50)]),
-        )
+    # doc.write("#0 n0=1", result)
+    # print(result.growth_phases)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
+    assert 0.0 == approx(result.growth_phases[0].n0, 1e-3)
+    assert result.growth_phases[0].SNR > 1000
 
-        result = process_curve(curve, constrain_n0=True, n0=0.0)
-        doc.write("#2 n0=0", result)
-        print(result.growth_phases)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
-        assert 0.0 == approx(result.growth_phases[0].n0, 1e-6)
-        assert result.growth_phases[0].SNR > 1000
+    result = process_curve(curve, constrain_n0=False)
+    # doc.write("#0 n0=auto", result)
+    # print(result.growth_phases)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
+    assert -0.25 < result.growth_phases[0].n0 < 0.25
+    assert result.growth_phases[0].SNR > 1000
 
-        result = process_curve(curve, constrain_n0=False)
-        doc.write("#2 n0=auto", result)
-        assert len(result.growth_phases) == 1
-        assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
-        assert -0.25 < result.growth_phases[0].n0 < 0.25
-        assert result.growth_phases[0].SNR > 1000
+
+def test_process_curve_basic1():
+
+    mu = 0.5
+    pph = 4.0
+
+    curve = pandas.Series(
+        data=(
+            [1.0] * 5
+            + [numpy.exp(mu * i / pph) for i in range(25)]
+            + [numpy.exp(mu * 24 / pph)] * 20
+        ),
+        index=([i / pph for i in range(50)]),
+    )
+
+    result = process_curve(curve, constrain_n0=True, n0=0.0)
+    # doc.write("#1 n0=0", result)
+    # print(result.growth_phases)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
+    assert 0.0 == approx(result.growth_phases[0].n0, 1e-3)
+    assert result.growth_phases[0].SNR > 1000
+
+    result = process_curve(curve, constrain_n0=False)
+    # doc.write("#1 n0=auto", result)
+    # print(result.growth_phases)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-1)
+    assert -0.25 < result.growth_phases[0].n0 < 0.25
+    assert result.growth_phases[0].SNR > 1000
+
+
+def test_process_curve_basic2():
+    mu = 0.20
+    pph = 4.0
+
+    curve = pandas.Series(
+        data=(
+            [i / 10.0 for i in range(10)]
+            + [numpy.exp(mu * i / pph) for i in range(25)]
+            + [numpy.exp(mu * 24 / pph)] * 15
+        ),
+        index=([i / pph for i in range(50)]),
+    )
+
+    result = process_curve(curve, constrain_n0=True, n0=0.0)
+    # doc.write("#2 n0=0", result)
+    # print(result.growth_phases)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
+    assert 0.0 == approx(result.growth_phases[0].n0, 1e-6)
+    assert result.growth_phases[0].SNR > 1000
+
+    result = process_curve(curve, constrain_n0=False)
+    # doc.write("#2 n0=auto", result)
+    assert len(result.growth_phases) == 1
+    assert mu == approx(result.growth_phases[0].slope, abs=1e-2)
+    assert -0.25 < result.growth_phases[0].n0 < 0.25
+    assert result.growth_phases[0].SNR > 1000
 
 
 def test_process_curve_wrong_time_unit():

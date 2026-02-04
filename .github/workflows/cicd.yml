@@ -5,8 +5,11 @@ name: CI/CD
 
 on:
   push:
+    branches: [main, master]
   pull_request:
-    branches: ["main"]
+    branches: [main, master]
+  release:
+    types: [published]
   schedule:
     - cron: "0 2 * * 3"
 

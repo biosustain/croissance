@@ -16,7 +16,7 @@ def segment_by_std_dev(series, increment=2, maximum=20):
     windows = []
     for i in range(start, duration, increment):
         for size in range(1, maximum + 1):
-            window = series[i : i + size * increment]
+            window = series.loc[i : i + size * increment]
             # Gaps in measurements may result in empty windows
             if not window.empty:
                 window = detrend(window)
@@ -57,7 +57,7 @@ def segment_points(series, segments):
     out = [(series.index[0], numpy.median(series[: series.index[0] + 1]))]
 
     def _add_knot(start, end):
-        window = series[start:end]
+        window = series.loc[start:end]
         if not window.empty:
             out.append(window_median(window, start, end))
 
